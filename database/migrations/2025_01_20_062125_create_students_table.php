@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('current_address', 100);
             $table->string('home_city_district', 50);
             $table->string('home_postal_code', 10);
+            $table->enum('gender', ['male', 'female']);
         });
     }
 

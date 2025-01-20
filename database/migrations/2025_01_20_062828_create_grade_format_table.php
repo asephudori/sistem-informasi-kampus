@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('grade_format', function (Blueprint $table) {
-            //
+            $table->id();
+            $table->string('min_grade');
+            $table->string('max_grade');
+            $table->string('alphabetical_grade');
         });
     }
 
@@ -22,7 +25,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('grade_format', function (Blueprint $table) {
-            //
+            $table->dropColumn('id');
+            $table->dropColumn('min_grade');
+            $table->dropColumn('max_grade');
+            $table->dropColumn('alphabetical_grade');
         });
     }
 };

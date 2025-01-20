@@ -12,7 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('university_informations', function (Blueprint $table) {
-            //
+            $table->string('name');
+            $table->string('address');
+            $table->string('regency');
+            $table->string('postal_code');
+            $table->string('logo');
         });
     }
 
@@ -22,7 +26,11 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('university_informations', function (Blueprint $table) {
-            //
+            $table->dropColumn('name');
+            $table->dropColumn('address');
+            $table->dropColumn('regency');
+            $table->dropColumn('postal_code');
+            $table->dropColumn('logo');
         });
     }
 };

@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('permission_roles', function (Blueprint $table) {
-            //
+            $table->id();
+            $table->string('name');
+            $table->string('description');
         });
     }
 
@@ -22,7 +24,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('permission_roles', function (Blueprint $table) {
-            //
+            $table->dropColumn('id');
+            $table->dropColumn('name');
+            $table->dropColumn('description');
         });
     }
 };
