@@ -12,7 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('faculties', function (Blueprint $table) {
-            //
+            $table->id('faculty_id');
+            $table->char('name', 50);
+            $table->timestamps();
         });
     }
 
@@ -21,8 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('faculties', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('faculties');
     }
 };
