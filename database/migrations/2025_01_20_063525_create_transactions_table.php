@@ -12,7 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('transactions', function (Blueprint $table) {
-            //
+            $table->id();
+            $table->foreignId('transaction_category_id')->constrained();
+            $table->foreignId('user_id')->constrained();
+            $table->enum('type', ['income', 'expense']);
+            $table->integer('amount');
+            $table->text('description');
+            $table->string('proof');
+            $table->date('date');
+            $table->enum('verification_status', ['pending', 'awaiting_verification', 'completed']);
+            $table->timestamp();
         });
     }
 

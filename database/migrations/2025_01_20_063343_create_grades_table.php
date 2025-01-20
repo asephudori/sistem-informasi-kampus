@@ -12,7 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('grades', function (Blueprint $table) {
-            //
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('class_id')->constrained()->onDelete('cascade');
+            $table->foreignId('grade_type_id')->constrained()->onDelete('cascade');
+            $table->integer('grade');
         });
     }
 
@@ -22,7 +26,13 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('grades', function (Blueprint $table) {
-            //
+            $table->dropForeign(['user_id']);
+            $table->dropForeign(['class_id']);
+            $table->dropForeign(['grade_type_id']);
+            $table->dropColumn('user_id');
+            $table->dropColumn('class_id');
+            $table->dropColumn('grade_type_id');
+            $table->dropColumn('grade');
         });
     }
 };
