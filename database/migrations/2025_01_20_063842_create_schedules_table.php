@@ -12,7 +12,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('schedules', function (Blueprint $table) {
-            //
+            $table->id('schedule_id');
+            $table->foreignId('class_id')->constrained('classes')->onDelete('cascade');
+            $table->enum('day', ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']);
+            $table->time('start_time');
+            $table->time('end_time');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('schedules', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('schedules');
     }
 };

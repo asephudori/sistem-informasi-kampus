@@ -12,7 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('advisory_classes', function (Blueprint $table) {
-            //
+            $table->id('advisory_class_id');
+            $table->foreignId('lecturer_id')->constrained('lecturers')->onDelete('cascade');
+            $table->foreignId('class_id')->constrained('classes')->onDelete('cascade');
+            $table->year('class_year');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('advisory_classes', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('advisory_class');
     }
 };
