@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('transactions', function (Blueprint $table) {
+        Schema::create('transactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('transaction_category_id')->constrained();
             $table->foreignId('user_id')->constrained();
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('proof');
             $table->date('date');
             $table->enum('verification_status', ['pending', 'awaiting_verification', 'completed']);
-            $table->timestamp();
+            $table->timestamps();
         });
     }
 
@@ -30,8 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('transactions', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('transactions');
     }
 };

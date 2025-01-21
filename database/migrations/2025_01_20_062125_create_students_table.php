@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('students', function (Blueprint $table) {
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+        Schema::create('students', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('advisory_class_id')->constrained()->onDelete('cascade');
             $table->foreignId('study_program_id')->constrained()->onDelete('cascade');
             $table->string('nim', 20)->unique();
@@ -34,23 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('students', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->dropForeign(['advisory_class_id']);
-            $table->dropForeign(['study_program_id']);
-            $table->dropColumn('user_id');
-            $table->dropColumn('advisory_class_id');
-            $table->dropColumn('study_program_id');
-            $table->dropColumn('nim');
-            $table->dropColumn('name');
-            $table->dropColumn('email');
-            $table->dropColumn('phone');
-            $table->dropColumn('birthplace');
-            $table->dropColumn('birthdate');
-            $table->dropColumn('home_address');
-            $table->dropColumn('current_address');
-            $table->dropColumn('home_city_district');
-            $table->dropColumn('home_postal_code');
-        });
+        Schema::dropIfExists('students');
     }
 };

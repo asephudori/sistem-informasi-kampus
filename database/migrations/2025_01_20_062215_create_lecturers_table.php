@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('lecturers', function (Blueprint $table) {
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+        Schema::create('lecturers', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('nidn', 20)->unique();
             $table->string('name', 100);
             $table->string('email', 100)->unique();
@@ -30,18 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('lecturers', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->dropColumn('user_id');
-            $table->dropColumn('nidn');
-            $table->dropColumn('name');
-            $table->dropColumn('email');
-            $table->dropColumn('phone');
-            $table->dropColumn('address');
-            $table->dropColumn('entry_date');
-            $table->dropColumn('birthplace');
-            $table->dropColumn('birthdate');
-            $table->dropColumn('gender');
-        });
+        Schema::dropIfExists('lecturers');
     }
 };

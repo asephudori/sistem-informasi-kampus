@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('transaction_categories', function (Blueprint $table) {
+        Schema::create('transaction_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('description');
@@ -24,11 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('transaction_categories', function (Blueprint $table) {
-            $table->dropColumn('id');
-            $table->dropColumn('name');
-            $table->dropColumn('description');
-            $table->dropColumn('type');
-        });
+        Schema::dropIfExists('transaction_categories');
     }
 };
