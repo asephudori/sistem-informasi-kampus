@@ -14,9 +14,8 @@ class FacultyLecturer extends Model
         return $this->belongsTo(User::class);
     }
 
-    // TODO: Uncomment kalo udah ada model Faculty
-    // public function faculty()
-    // {
-    //     return $this->belongsTo(Faculty::class);
-    // }
+    public function faculty()
+    {
+        return $this->belongsTo(Faculty::class);
+    }
 }

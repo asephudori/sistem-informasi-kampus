@@ -17,10 +17,9 @@ class Transaction extends Model
         return $this->belongsTo(User::class);
     }
 
-    // TODO: Uncomment kalo model TransactionCategory udah ada
-    // public function transactionCategory()
-    // {
-    //     return $this->belongsTo(TransactionCategory::class);
-    // }
+    public function transactionCategory()
+    {
+        return $this->belongsTo(TransactionCategory::class);
+    }
 }
 

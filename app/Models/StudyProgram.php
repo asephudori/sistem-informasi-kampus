@@ -8,10 +8,9 @@ class StudyProgram extends Model
 {
     protected $fillable = ['faculty_id', 'name'];
 
-    // TODO: Uncomment kalo model Faculty udah ada
-    // public function faculty()
-    // {
-    //     return $this->belongsTo(Faculty::class);
-    // }
+    public function faculty()
+    {
+        return $this->belongsTo(Faculty::class);
+    }
 }
 

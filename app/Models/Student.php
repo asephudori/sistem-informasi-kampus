@@ -38,4 +38,9 @@ class Student extends Model
     {
         return $this->belongsTo(StudyProgram::class);
     }
+
+    public function learningClasses()
+    {
+        return $this->hasMany(ClassMember::class);
+    }
 }

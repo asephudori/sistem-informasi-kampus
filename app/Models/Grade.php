@@ -18,7 +18,7 @@ class Grade extends Model
 
     public function class()
     {
-        return $this->belongsTo(Class::class);
+        return $this->belongsTo(LearningClass::class);
     }
 
     public function gradeType()

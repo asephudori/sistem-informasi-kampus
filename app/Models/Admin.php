@@ -14,9 +14,8 @@ class Admin extends Model
         return $this->belongsTo(User::class);
     }
 
-    // TODO: Uncomment kalo udah ada model PermissionRole
-    // public function permissionRole()
-    // {
-    //     return $this->belongsTo(PermissionRole::class);
-    // }
+    public function permissionRole()
+    {
+        return $this->belongsTo(PermissionRole::class);
+    }
 }

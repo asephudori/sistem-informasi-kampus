@@ -10,7 +10,7 @@ class News extends Model
 
     protected $fillable = ['admin_id', 'title', 'description', 'image', 'date'];
 
-    public function user()
+    public function admin()
     {
         return $this->belongsTo(User::class);
     }
