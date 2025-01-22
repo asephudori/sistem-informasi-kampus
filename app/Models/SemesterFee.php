@@ -9,12 +9,12 @@ class SemesterFee extends Model
 {
     use HasFactory;
 
-    protected $table = 'semester_fee'; // Explicitly define the table name
-    protected $fillable = ['semester_id', 'user_id', 'transaction_id', 'payment_status', 'payment_proof'];
+    protected $table = 'semester_fee'; 
+    protected $fillable = ['semester_id', 'student_id', 'transaction_id', 'payment_status', 'payment_proof'];
 
     public function semester()
     {
-        return $this->belongsTo(Semesters::class);
+        return $this->belongsTo(Semester::class);
     }
 
     public function user()
@@ -24,6 +24,6 @@ class SemesterFee extends Model
 
     public function transaction()
     {
-        return $this->belongsTo(Transactions::class); // Asumsi ada model Transaction
+        return $this->belongsTo(Transaction::class);
     }
 }

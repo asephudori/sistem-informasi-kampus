@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Grades extends Model
+class Grade extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'class_id', 'grade_type_id', 'grade'];
+    protected $fillable = ['student_id', 'class_id', 'grade_type_id', 'grade'];
 
     public function user()
     {
@@ -18,11 +18,11 @@ class Grades extends Model
 
     public function class()
     {
-        return $this->belongsTo(Classes::class); // Perhatikan: Classes bukan Class
+        return $this->belongsTo(Class::class);
     }
 
     public function gradeType()
     {
-        return $this->belongsTo(GradeTypes::class);
+        return $this->belongsTo(GradeType::class);
     }
 }

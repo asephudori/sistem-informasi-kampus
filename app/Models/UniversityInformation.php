@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UniversityInformations extends Model
+class UniversityInformation extends Model
 {
     use HasFactory;
-    protected $table = 'university_informations';
+    protected $table = 'university_information';
     protected $fillable = ['name', 'address', 'regency', 'postal_code', 'logo'];
     public $timestamps = false; // Karena tabel tidak memiliki kolom created_at dan updated_at
 }
