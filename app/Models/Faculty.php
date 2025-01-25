@@ -10,4 +10,19 @@ class Faculty extends Model
     use HasFactory;
     protected $table = 'faculties';
     protected $fillable = ['name'];
+
+    public function facultyLecturers()
+    {
+        return $this->hasMany(FacultyLecturer::class);
+    }
+
+    public function studyPrograms()
+    {
+        return $this->hasMany(StudyProgram::class);
+    }
+
+    public function lecturers()
+    {
+        return $this->belongsToMany(User::class);
+    }
 }

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class UniversityInformation extends Model
 {
     use HasFactory;
-    protected $table = 'university_information';
+    protected $table = 'university_informations';
     protected $fillable = ['name', 'address', 'regency', 'postal_code', 'logo'];
     public $timestamps = false; // Karena tabel tidak memiliki kolom created_at dan updated_at
 }

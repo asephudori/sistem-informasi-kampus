@@ -6,10 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class AdvisoryClass extends Model
 {
+    protected $table = 'advisory_classes';
+    
     protected $fillable = ['lecturer_id', 'class_year'];
 
-    public function user()
+    public function advisoryLecturer()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function students()
+    {
+        return $this->hasMany(Student::class);
     }
 }

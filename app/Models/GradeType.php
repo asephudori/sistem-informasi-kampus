@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class GradeType extends Model
 {
     use HasFactory;
-    protected $table = 'grade_type';
+    protected $table = 'grade_types';
     protected $fillable = ['name', 'percentage'];
 
 }

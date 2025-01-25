@@ -8,9 +8,9 @@ class LearningClass extends Model
 {
     protected $table = 'classes';
 
-    protected $fillable = ['user_id', 'course_id', 'semester_id'];
+    protected $fillable = ['lecturer_id', 'course_id', 'semester_id'];
 
-    public function user()
+    public function lecturer()
     {
         return $this->belongsTo(User::class);
     }
@@ -23,5 +23,25 @@ class LearningClass extends Model
     public function semester()
     {
         return $this->belongsTo(Semester::class);
+    }
+
+    public function class_members()
+    {
+        return $this->hasMany(ClassMember::class);
+    }
+
+    public function students()
+    {
+        return $this->belongsToMany(Student::class);
+    }
+
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class);
+    }
+
+    public function grades()
+    {
+        return $this->hasMany(Grade::class);
     }
 }

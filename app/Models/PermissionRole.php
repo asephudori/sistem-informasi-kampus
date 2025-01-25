@@ -8,6 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class PermissionRole extends Model
 {
     use HasFactory;
-    protected $table = 'permission_role';
+    protected $table = 'permission_roles';
     protected $fillable = ['name', 'description'];
+
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class);
+    }
+
+    public function admins()
+    {
+        return $this->hasMany(Admin::class);
+    }
 }

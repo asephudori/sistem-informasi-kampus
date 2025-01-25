@@ -24,4 +24,34 @@ class Lecturer extends Model
     {
         return $this->belongsTo(User::class);
     }
+    
+    public function advisoryClass()
+    {
+        return $this->hasMany(AdvisoryClass::class);
+    }
+    
+        public function learningClasses()
+        {
+            return $this->hasMany(LearningClass::class);
+        }
+
+    public function studyProgramLecturers()
+    {
+        return $this->hasMany(StudyProgramLecturer::class);
+    }
+
+    public function studyPrograms()
+    {
+        return $this->belongsToMany(StudyProgram::class);
+    }
+
+    public function facultyLecturers()
+    {
+        return $this->hasMany(FacultyLecturer::class);
+    }
+
+    public function faculty()
+    {
+        return $this->belongsToMany(Faculty::class);
+    }
 }

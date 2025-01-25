@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Student extends Model
 {
-    protected $table = 'students'; // Optional since Laravel assumes plural form
+    protected $table = 'students';
     protected $fillable = [
         'user_id', 
         'advisory_class_id', 
@@ -39,8 +39,23 @@ class Student extends Model
         return $this->belongsTo(StudyProgram::class);
     }
 
-    public function learningClasses()
+    public function classMembers()
     {
         return $this->hasMany(ClassMember::class);
+    }
+
+    public function learningClasses()
+    {
+        return $this->belongsToMany(LearningClass::class);
+    }
+
+    public function grades()
+    {
+        return $this->hasMany(Grade::class);
+    }
+
+    public function semesterFees()
+    {
+        return $this->hasMany(SemesterFee::class);
     }
 }
