@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class StudyProgram extends Model
 {
+    use HasFactory;
+    
     protected $table = 'study_programs';
     
     protected $fillable = ['faculty_id', 'name'];

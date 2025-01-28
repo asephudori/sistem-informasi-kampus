@@ -3,13 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
-namespace App\Models;
-
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Transaction extends Model
 {
+    use HasFactory;
+    
     protected $table = 'transactions';
     
     protected $fillable = ['transaction_category_id', 'admin_id', 'type', 'amount', 'description', 'proof', 'date', 'verification_status'];
