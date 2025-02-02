@@ -8,22 +8,32 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Student extends Model
 {
     use HasFactory;
-    
+
     protected $table = 'students';
+
+    // Tentukan 'user_id' sebagai primary key
+    protected $primaryKey = 'user_id';
+
+    // Jika 'user_id' bukan auto-incrementing
+    public $incrementing = false;
+
+    // Tentukan tipe data primary key
+    protected $keyType = 'int'; // Sesuaikan dengan tipe data 'user_id'
+    
     protected $fillable = [
-        'user_id', 
-        'advisory_class_id', 
-        'study_program_id', 
-        'nim', 
-        'name', 
-        'email', 
-        'phone', 
-        'birthplace', 
-        'birthdate', 
-        'home_address', 
-        'current_address', 
-        'home_city_district', 
-        'home_postal_code', 
+        'user_id',
+        'advisory_class_id',
+        'study_program_id',
+        'nim',
+        'name',
+        'email',
+        'phone',
+        'birthplace',
+        'birthdate',
+        'home_address',
+        'current_address',
+        'home_city_district',
+        'home_postal_code',
         'gender'
     ];
 
