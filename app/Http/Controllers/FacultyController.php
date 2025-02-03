@@ -4,72 +4,92 @@ namespace App\Http\Controllers;
 
 use App\Models\Faculty;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 
 class FacultyController extends Controller
 {
-    /**
-     * Display a listing of the faculties.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    // Get all faculties
+    public function index(): JsonResponse
     {
-        return Faculty::all();
+        try {
+            $faculties = Faculty::all();
+
+            if ($faculties->isEmpty()) {
+                return response()->json(['message' => 'No faculties found'], 404);
+            }
+
+            return response()->json($faculties);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'An error occurred while fetching faculties', 'error' => $e->getMessage()], 500);
+        }
     }
 
-    /**
-     * Store a newly created faculty in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    // Store a new faculty
+    public function store(Request $request): JsonResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:50|unique:faculties'
-        ]);
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:50|unique:faculties'
+            ]);
 
-        $faculty = Faculty::create($validated);
-        return response()->json($faculty, 201);
+            $faculty = Faculty::create($validated);
+            return response()->json($faculty, 201);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'An error occurred while creating the faculty', 'error' => $e->getMessage()], 500);
+        }
     }
 
-    /**
-     * Display the specified faculty.
-     *
-     * @param  \App\Models\Faculty  $faculty
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Faculty $faculty)
+    // Display the specified faculty.
+    public function show($id): JsonResponse
     {
-        return $faculty;
+        try {
+            $faculty = Faculty::find($id);
+
+            if (!$faculty) {
+                return response()->json(['message' => 'Faculty not found'], 404);
+            }
+
+            return response()->json($faculty);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'An error occurred while fetching the faculty', 'error' => $e->getMessage()], 500);
+        }
     }
 
-    /**
-     * Update the specified faculty in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Faculty  $faculty
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Faculty $faculty)
+    // Update the specified faculty in storage.
+    public function update(Request $request, $id): JsonResponse
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:50|unique:faculties,name,' . $faculty->id
-        ]);
+        try {
+            $faculty = Faculty::find($id);
 
-        $faculty->update($validated);
-        return response()->json($faculty);
+            if (!$faculty) {
+                return response()->json(['message' => 'Faculty not found'], 404);
+            }
+
+            $validated = $request->validate([
+                'name' => 'required|string|max:50|unique:faculties,name,' . $id
+            ]);
+
+            $faculty->update($validated);
+            return response()->json($faculty);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'An error occurred while updating the faculty', 'error' => $e->getMessage()], 500);
+        }
     }
 
-    /**
-     * Remove the specified faculty from storage.
-     *
-     * @param  \App\Models\Faculty  $faculty
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Faculty $faculty)
+    // Remove the specified faculty from storage.
+    public function destroy($id): JsonResponse
     {
-        $faculty->delete();
-        return response()->json(null, 204);
+        try {
+            $faculty = Faculty::find($id);
+
+            if (!$faculty) {
+                return response()->json(['message' => 'Faculty not found'], 404);
+            }
+
+            $faculty->delete();
+            return response()->json(['message' => 'Faculty deleted successfully'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'An error occurred while deleting the faculty', 'error' => $e->getMessage()], 500);
+        }
     }
 }

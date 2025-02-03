@@ -15,13 +15,17 @@ class StudyProgramController extends Controller
      */
     public function index(): JsonResponse
     {
-        $studyPrograms = StudyProgram::with('faculty')->get();
+        try {
+            $studyPrograms = StudyProgram::with('faculty')->get();
 
-        // Check if no study programs are found
-        if ($studyPrograms->isEmpty()) {
-            return response()->json(['message' => 'No study programs found'], 404);
+            if ($studyPrograms->isEmpty()) {
+                return response()->json(['message' => 'No study programs found'], 404);
+            }
+
+            return response()->json($studyPrograms);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'An error occurred while fetching study programs', 'error' => $e->getMessage()], 500);
         }
-        return response()->json($studyPrograms);
     }
 
     /**
@@ -39,6 +43,8 @@ class StudyProgramController extends Controller
             return response()->json($studyProgram, 201);
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'An error occurred while creating the study program', 'error' => $e->getMessage()], 500);
         }
     }
 
@@ -47,12 +53,12 @@ class StudyProgramController extends Controller
      */
     public function show(StudyProgram $studyProgram): JsonResponse
     {
-        // Check if the study program exists
-        if (!$studyProgram) {
-            return response()->json(['message' => 'Study program not found'], 404);
+        try {
+            // Laravel's route model binding will automatically return 404 if not found
+            return response()->json($studyProgram->load('faculty'));
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'An error occurred while fetching the study program', 'error' => $e->getMessage()], 500);
         }
-
-        return response()->json($studyProgram->load('faculty'));
     }
 
     /**
@@ -70,6 +76,8 @@ class StudyProgramController extends Controller
             return response()->json($studyProgram);
         } catch (ValidationException $e) {
             return response()->json(['errors' => $e->errors()], 422);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'An error occurred while updating the study program', 'error' => $e->getMessage()], 500);
         }
     }
 
@@ -78,12 +86,12 @@ class StudyProgramController extends Controller
      */
     public function destroy(StudyProgram $studyProgram): JsonResponse
     {
-        // Check if study program exists
-        if (!$studyProgram) {
-            return response()->json(['message' => 'Study program not found'], 404);
+        try {
+            // Laravel's route model binding will automatically return 404 if not found
+            $studyProgram->delete();
+            return response()->json(['message' => 'Study program deleted successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'An error occurred while deleting the study program', 'error' => $e->getMessage()], 500);
         }
-
-        $studyProgram->delete();
-        return response()->json(['message' => 'Study program deleted successfully']);
     }
 }
