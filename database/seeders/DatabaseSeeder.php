@@ -15,9 +15,17 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
+
+        $this->call(NonForeignKeySeeder::class);
+        $this->call(LecturerSeeder::class);
+        $this->call(AdminSeeder::class);
+        $this->call(ForeignKeyToNonForeignKeySeeder::class);
+        $this->call(StudentSeeder::class);
+        $this->call(ForeignKeyToForeignKeySeeder::class);
+        $this->call(ForeignKeyOnlySeeder::class);
     }
 }
