@@ -27,5 +27,13 @@ Route::apiResource('faculties', FacultyController::class);
 Route::apiResource('study-programs', StudyProgramController::class);
 Route::apiResource('semesters', SemesterController::class);
 Route::apiResource('schedules', ScheduleController::class);
-Route::apiResource('faculty_lecturers', FacultyLecturerController::class);
-Route::apiResource('study_program_lecturers', StudyProgramLecturerController::class);
+Route::apiResource('faculty-lecturers', FacultyLecturerController::class);
+Route::apiResource('study-program-lecturers', StudyProgramLecturerController::class);
+
+// route tambahan
+// menampilkan schedules dengan info kelas
+Route::get('/schedules/{schedule}/with-class-info', [ScheduleController::class, 'showWithClassInfo']);
+// menampilkan schedules berdasarkan class_id
+Route::get('/schedules/class/{classId}', [ScheduleController::class, 'getSchedulesByClassId']);
+// menampilkan study program lecturer berdasarkan faculty id
+Route::get('/study-program-lecturers/faculty/{facultyId}', [StudyProgramLecturerController::class, 'lecturersByFaculty']);
