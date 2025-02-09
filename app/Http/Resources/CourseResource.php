@@ -17,9 +17,17 @@ class CourseResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'prequisite-course' => [
-                'id' => optional($this->prequisiteCourse)->id,
-                'name' => optional($this->prequisiteCourse)->name,
+            'prerequisite-course' => [
+                'id' => optional($this->prerequisite)->id,
+                'name' => optional($this->prerequisite)->name,
+            ],
+            'dependet-courses' => [
+                $this->dependentCourses->map(function ($dependentCourse) {
+                    return [
+                        'id' => optional($dependentCourse)->id,
+                        'name' => optional($dependentCourse)->name,
+                    ];
+                })
             ]
         ];
     }

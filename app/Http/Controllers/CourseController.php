@@ -33,7 +33,7 @@ class CourseController extends Controller
 
         $rules = [
             'name' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
-            'prequisite' => 'sometimes|exists:courses,id',
+            'prerequisite_id' => 'sometimes|exists:courses,id',
         ];
 
         return $request->validate($rules);
@@ -91,6 +91,12 @@ class CourseController extends Controller
         try {
             $course = Course::findOrFail($id);
             $validatedData = $this->validatedData($request, true);
+
+            if (!empty($validatedData['prerequisite_id'])) {
+                if ($validatedData['prerequisite_id'] == $id) {
+                    return response()->json(['message' => 'Course id cannot be prerequisite_id of it self'], 400);
+                }
+            }
             $course->update($validatedData);
             return response()->json(['message' => 'Course updated successfully', 'course' => new CourseResource($course)]);
         } catch (ValidationException $e) {
