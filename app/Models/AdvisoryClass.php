@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class AdvisoryClass extends Model
 {
     use HasFactory;
-    
+
     protected $table = 'advisory_classes';
-    
+
     protected $fillable = ['lecturer_id', 'class_year'];
 
-    public function advisoryLecturer()
+    public function lecturer()
     {
         return $this->belongsTo(User::class);
     }

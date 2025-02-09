@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Lecturer;
+use App\Models\Admin;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use App\Http\Resources\LecturerResource;
+use App\Http\Resources\AdminResource;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class LecturerController extends Controller
+class AdminController extends Controller
 {
     private function validatedUserData(Request $request)
     {
@@ -20,7 +19,7 @@ class LecturerController extends Controller
         ]);
     }
 
-    private function validatedLecturerData(Request $request, bool $useSometimes = false)
+    private function validatedAdminData(Request $request, bool $useSometimes = false)
     {
         if (empty($request->all())) {
             $jsonData = trim($request->getContent());
@@ -42,15 +41,9 @@ class LecturerController extends Controller
         }
 
         $rules = [
-            'nidn' => ($useSometimes ? 'sometimes|' : 'required|') . 'unique:lecturers,nidn',
+            'permission_role_id' => ($useSometimes ? 'sometimes|' : 'required|') . 'exists:permission_roles,id',
             'name' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
-            'email' => ($useSometimes ? 'sometimes|' : 'required|') . 'email|max:255',
-            'phone' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
-            'address' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
-            'entry_date' => ($useSometimes ? 'sometimes|' : 'required|') . 'date',
-            'birthplace' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
-            'birthdate' => ($useSometimes ? 'sometimes|' : 'required|') . 'date',
-            'gender' => ($useSometimes ? 'sometimes|' : 'required|') . 'in:male, female',
+            'role' => ($useSometimes ? 'sometimes|' : 'required|') . 'in:super admin,admin',
         ];
 
         return $request->validate($rules);
@@ -62,10 +55,10 @@ class LecturerController extends Controller
     public function index()
     {
         try {
-            $lecturers = Lecturer::all();
-            return LecturerResource::collection($lecturers);
+            $admins = Admin::all();
+            return AdminResource::collection($admins);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to retrieve lecturers', 'errors' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Failed to retrieve admins', 'errors' => $e->getMessage()], 500);
         }
     }
 
@@ -76,21 +69,21 @@ class LecturerController extends Controller
     {
         try {
             $validatedUserData = $this->validatedUserData($request);
-            $validatedLecturerData = $this->validatedLecturerData($request);
+            $validatedStudentData = $this->validatedAdminData($request);
 
             $user = User::create([
                 'username' => $validatedUserData['username'],
                 'password' => bcrypt($validatedUserData['password']),
             ]);
-            $lecturer = Lecturer::create(array_merge(
-                $validatedLecturerData,
+            $admin = Admin::create(array_merge(
+                $validatedStudentData,
                 ['user_id' => $user->id]
             ));
-            return response()->json(['message' => 'Lecturer created successfully', 'lecturer' => new LecturerResource($lecturer)], 201);
+            return response()->json(['message' => 'Admin created successfully', 'admin' => new AdminResource($admin)], 201);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to create lecturer', 'errors' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Failed to create admin', 'errors' => $e->getMessage()], 500);
         }
     }
 
@@ -100,10 +93,12 @@ class LecturerController extends Controller
     public function show(string $id)
     {
         try {
-            $lecturer = Lecturer::findOrFail($id);
-            return new LecturerResource($lecturer);
+            $admin = Admin::findOrFail($id);
+            return new AdminResource($admin);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Lecturer not found'], 404);
+            return response()->json(['message' => 'Admin not found'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to retrieve admin', 'errors' => $e->getMessage()], 500);
         }
     }
 
@@ -113,16 +108,16 @@ class LecturerController extends Controller
     public function update(Request $request, string $id)
     {
         try {
-            $lecturer = Lecturer::findOrFail($id);
-            $validatedLecturerData = $this->validatedLecturerData($request, true);
-            $lecturer->update($validatedLecturerData);
-            return response()->json(['message' => 'Lecturer updated successfully', 'lecturer' => new LecturerResource($lecturer)], 200);
+            $admin = Admin::findOrFail($id);
+            $validatedAdminData = $this->validatedAdminData($request, true);
+            $admin->update($validatedAdminData);
+            return response()->json(['message' => 'Admin updated successfully', 'admin' => new AdminResource($admin)]);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Lecturer not found'], 404);
+            return response()->json(['message' => 'Admin not found'], 404);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to update lecturer', 'errors' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Failed to update admin', 'errors' => $e->getMessage()], 500);
         }
     }
 
@@ -132,15 +127,15 @@ class LecturerController extends Controller
     public function destroy(string $id)
     {
         try {
-            $lecturer = Lecturer::findOrFail($id);
-            $lecturer->delete();
-            $user = User::findOrFail($lecturer->user_id);
+            $admin = Admin::findOrFail($id);
+            $admin->delete();
+            $user = User::findOrFail($id);
             $user->delete();
-            return response()->json(['message' => 'Lecturer deleted successfully'], 200);
+            return response()->json(['message' => 'Admin deleted successfully']);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Lecturer not found'], 404);
+            return response()->json(['message' => 'Admin not found'], 404);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to delete lecturer', 'errors' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Failed to delete admin', 'errors' => $e->getMessage()], 500);
         }
     }
 }

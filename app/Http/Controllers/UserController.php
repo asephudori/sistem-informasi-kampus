@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Http\Resources\UserCollection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 
@@ -16,16 +15,12 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
-        return new UserCollection($users);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        try {
+            $users = User::all();
+            return UserResource::collection($users);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to retrieve users', 'errors' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -42,11 +37,11 @@ class UserController extends Controller
                 'username' => $validatedData['username'],
                 'password' => bcrypt($validatedData['password']),
             ]);
-    
-            return response()->json(['message' => 'User created successfully', 'user' => $user]);
+
+            return response()->json(['message' => 'User created successfully', 'user' => new UserResource($user)]);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()]);
-        }        
+        }
     }
 
     /**
@@ -63,14 +58,6 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
@@ -79,12 +66,12 @@ class UserController extends Controller
             $validatedData = $request->validate([
                 'username' => 'required|unique:users,username|max:255',
             ]);
-    
+
             $user = User::findOrFail($id);
             $user->username = $validatedData['username'];
             $user->save();
-    
-            return response()->json(['message' => 'User updated successfully', 'user' => $user]);
+
+            return response()->json(['message' => 'User updated successfully', 'user' => new UserResource($user)]);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'User not found'], 404);
         } catch (ValidationException $e) {
@@ -100,8 +87,8 @@ class UserController extends Controller
         try {
             $user = User::findOrFail($id);
             $user->delete();
-    
-            return response()->json(['message' => 'User deleted successfully']);            
+
+            return response()->json(['message' => 'User deleted successfully']);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'User not found'], 404);
         }
