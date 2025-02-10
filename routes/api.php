@@ -11,6 +11,12 @@ use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\FacultyLecturerController;
 use App\Http\Controllers\studyProgramLecturerController;
+use App\Http\Controllers\ClassMemberController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\SemesterFeeController;
+use App\Http\Controllers\TransactionCategoryController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\UniversityInformationController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
@@ -29,6 +35,12 @@ Route::apiResource('semesters', SemesterController::class);
 Route::apiResource('schedules', ScheduleController::class);
 Route::apiResource('faculty-lecturers', FacultyLecturerController::class);
 Route::apiResource('study-program-lecturers', StudyProgramLecturerController::class);
+Route::apiResource('class-members', ClassMemberController::class);
+Route::apiResource('news',NewsController::class);
+Route::apiResource('university-information',UniversityInformationController::class);
+Route::apiResource('semester-fee',SemesterFeeController::class);
+Route::apiResource('transaction-category',TransactionCategoryController::class);
+Route::apiResource('transaction',TransactionController::class);
 
 // route tambahan
 // menampilkan schedules dengan info kelas
@@ -37,3 +49,9 @@ Route::get('/schedules/{schedule}/with-class-info', [ScheduleController::class, 
 Route::get('/schedules/class/{classId}', [ScheduleController::class, 'getSchedulesByClassId']);
 // menampilkan study program lecturer berdasarkan faculty id
 Route::get('/study-program-lecturers/faculty/{facultyId}', [StudyProgramLecturerController::class, 'lecturersByFaculty']);
+// menampilkan class member by class id
+Route::get('/class-members/class/{classId}', [ClassMemberController::class, 'getClassMembersByClass']);
+// mencari class member dengan beberapa parameter
+Route::get('/class-members/search', [ClassMemberController::class, 'search']);
+// mencari news dengan beberapa parameter
+Route::get('/news/search', [NewsController::class, 'search']);
