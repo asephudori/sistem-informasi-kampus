@@ -20,11 +20,21 @@ class NewsController extends Controller
     public function index(Request $request)
     {
         try {
-            $news = News::with('admin')->paginate(10);
-
-            return response()->json($news);
-        } catch (Throwable $e) {
-            return response()->json(['message' => 'Error retrieving news', 'error' => $e->getMessage()], 500);
+            $query = News::with('admin');
+    
+            if ($request->has('search')) {
+                $search = $request->input('search');
+                $query->where(function ($q) use ($search) {
+                    $q->where('title', 'like', "%$search%")
+                      ->orWhere('description', 'like', "%$search%");
+                });
+            }
+    
+            $news = $query->orderBy('date', 'desc')->paginate(10);
+    
+            return response()->json(['status' => 'success', 'data' => $news]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }
 
@@ -98,53 +108,6 @@ class NewsController extends Controller
             return response()->json(['message' => 'News not found'], 404);
         } catch (Throwable $e) {
             return response()->json(['message' => 'Error deleting news', 'error' => $e->getMessage()], 500);
-        }
-    }
-
-    public function search(Request $request)
-    {
-        try {
-            // Validasi input
-            $request->validate([
-                'keyword' => 'nullable|string',
-                'start_date' => 'nullable|date',
-                'end_date' => 'nullable|date|after_or_equal:start_date',
-                'per_page' => 'nullable|integer|min:1',
-                'page' => 'nullable|integer|min:1',
-            ]);
-
-            $keyword = $request->query('keyword');
-            $startDate = $request->query('start_date');
-            $endDate = $request->query('end_date');
-            $perPage = $request->query('per_page', 10);
-            $page = $request->query('page', 1);
-
-            Paginator::currentPageResolver(function () use ($page) {
-                return $page;
-            });
-
-            $query = News::with('admin');
-
-            if ($keyword) {
-                $query->where(function ($q) use ($keyword) {
-                    $q->where('title', 'like', "%$keyword%")
-                        ->orWhere('description', 'like', "%$keyword%");
-                });
-            }
-
-            if ($startDate && $endDate) {
-                $query->whereBetween('date', [$startDate, $endDate]);
-            }
-
-            $news = $query->paginate($perPage);
-
-            if ($news->isEmpty()) {
-                return response()->json(['data' => [], 'message' => 'No news found'], 200);
-            }
-
-            return response()->json($news);
-        } catch (Throwable $e) {
-            return response()->json(['message' => 'Error searching news', 'error' => $e->getMessage()], 500);
         }
     }
 }

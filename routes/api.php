@@ -51,7 +51,3 @@ Route::get('/schedules/class/{classId}', [ScheduleController::class, 'getSchedul
 Route::get('/study-program-lecturers/faculty/{facultyId}', [StudyProgramLecturerController::class, 'lecturersByFaculty']);
 // menampilkan class member by class id
 Route::get('/class-members/class/{classId}', [ClassMemberController::class, 'getClassMembersByClass']);
-// mencari class member dengan beberapa parameter
-Route::get('/class-members/search', [ClassMemberController::class, 'search']);
-// mencari news dengan beberapa parameter
-Route::get('/news/search', [NewsController::class, 'search']);

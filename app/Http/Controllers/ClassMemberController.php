@@ -12,14 +12,32 @@ use Throwable; // Import Throwable for catching any exception
 
 class ClassMemberController extends Controller
 {
-    // show all class member
-    public function index()
+    // show all class member with search func
+    public function index(Request $request)
     {
         try {
-            $classMembers = ClassMember::with(['class', 'user'])->get();
-            return response()->json($classMembers);
-        } catch (Throwable $e) { // Catch any exception
-            return response()->json(['message' => 'Error retrieving class members', 'error' => $e->getMessage()], 500);
+            $query = ClassMember::with(['class', 'user']);
+
+            // Search functionality (combining all search criteria)
+            if ($request->has('search')) {
+                $search = $request->input('search');
+                $query->where(function ($q) use ($search) {
+                    $q->whereHas('class', function ($classQuery) use ($search) { // Search in class name
+                        $classQuery->where('name', 'like', "%$search%");
+                    })
+                    ->orWhereHas('user', function ($userQuery) use ($search) { // Search in user name
+                        $userQuery->where('name', 'like', "%$search%");
+                    })
+                    ->orWhere('semester_grades', 'like', "%$search%"); // Search in semester grades
+                });
+            }
+
+
+            $classMembers = $query->paginate(10); // Paginate the results
+
+            return response()->json(['status' => 'success', 'data' => $classMembers]);
+        } catch (Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }
 
@@ -104,40 +122,6 @@ class ClassMemberController extends Controller
             return response()->json($classMembers);
         } catch (Throwable $e) {
             return response()->json(['message' => 'Error retrieving class members', 'error' => $e->getMessage()], 500);
-        }
-    }
-
-    // Search class members based on class_id, student_id, or semester_grades
-    public function search(Request $request)
-    {
-        try {
-            // Get the search parameters from the request
-            $classId = $request->query('class_id');
-            $studentId = $request->query('student_id');
-            $semesterGrades = $request->query('semester_grades');
-
-            // Start building the query
-            $query = ClassMember::with(['class', 'user']);
-
-            // Apply filters based on provided parameters
-            if ($classId) {
-                $query->where('class_id', $classId);
-            }
-
-            if ($studentId) {
-                $query->where('student_id', $studentId);
-            }
-
-            if ($semesterGrades) {
-                $query->where('semester_grades', 'like', '%' . $semesterGrades . '%');
-            }
-
-            // Execute the query and get the results
-            $classMembers = $query->get();
-
-            return response()->json($classMembers);
-        } catch (Throwable $e) {
-            return response()->json(['message' => 'Error searching class members', 'error' => $e->getMessage()], 500);
         }
     }
 }
