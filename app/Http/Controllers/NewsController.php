@@ -30,6 +30,38 @@ class NewsController extends Controller
                 });
             }
     
+            // Filter by date range
+            if ($request->has('start_date') && $request->has('end_date')) {
+                $startDate = $request->input('start_date');
+                $endDate = $request->input('end_date');
+    
+                // Validate date format (important!)
+                $isValidStartDate = \DateTime::createFromFormat('Y-m-d', $startDate) !== false;
+                $isValidEndDate = \DateTime::createFromFormat('Y-m-d', $endDate) !== false;
+    
+                if (!$isValidStartDate || !$isValidEndDate) {
+                    return response()->json(['status' => 'error', 'message' => 'Invalid date format. Use YYYY-MM-DD.'], 400); // Bad Request
+                }
+    
+    
+                $query->whereBetween('date', [$startDate, $endDate]);
+    
+            } elseif ($request->has('start_date') && !$request->has('end_date')) {
+                $startDate = $request->input('start_date');
+                $isValidStartDate = \DateTime::createFromFormat('Y-m-d', $startDate) !== false;
+                if (!$isValidStartDate) {
+                    return response()->json(['status' => 'error', 'message' => 'Invalid start date format. Use YYYY-MM-DD.'], 400); // Bad Request
+                }
+                $query->where('date', '>=', $startDate);
+            } elseif (!$request->has('start_date') && $request->has('end_date')) {
+                $endDate = $request->input('end_date');
+                $isValidEndDate = \DateTime::createFromFormat('Y-m-d', $endDate) !== false;
+                if (!$isValidEndDate) {
+                    return response()->json(['status' => 'error', 'message' => 'Invalid end date format. Use YYYY-MM-DD.'], 400); // Bad Request
+                }
+                $query->where('date', '<=', $endDate);
+            }
+    
             $news = $query->orderBy('date', 'desc')->paginate(10);
     
             return response()->json(['status' => 'success', 'data' => $news]);
