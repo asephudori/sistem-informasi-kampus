@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
         $this->call(NonForeignKeySeeder::class);
         $this->call(LecturerSeeder::class);
         $this->call(AdminSeeder::class);
+        $this->call(StudyProgramSeeder::class);
         $this->call(ForeignKeyToNonForeignKeySeeder::class);
         $this->call(StudentSeeder::class);
         $this->call(ForeignKeyToForeignKeySeeder::class);

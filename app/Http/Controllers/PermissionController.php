@@ -111,6 +111,7 @@ class PermissionController extends Controller
     {
         try {
             $permission = Permission::findOrFail($id);
+            $permission->permissionRoles()->detach();
             $permission->delete();
             return response()->json(['message' => 'Permission deleted successfully']);
         } catch (ModelNotFoundException $e) {

@@ -31,6 +31,10 @@ class LearningClassResource extends JsonResource
                 'start_periode' => optional($this->semester)->start_periode,
                 'end_periode' => optional($this->semester)->end_periode,
             ],
+            'classroom' => [
+                'id' => optional($this->classroom)->id,
+                'name' => optional($this->classroom)->name,
+            ],
         ], $request->query('members') === 'true' ? [
             'class-members' => $this->students->map(function ($student) {
                 return [

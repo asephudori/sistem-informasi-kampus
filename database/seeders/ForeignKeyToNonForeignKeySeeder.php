@@ -17,9 +17,9 @@ class ForeignKeyToNonForeignKeySeeder extends Seeder
      */
     public function run(): void
     {
+        // StudyProgram::factory()->count(10)->create();
         LearningClass::factory()->count(10)->create();
         AdvisoryClass::factory()->count(5)->create();
-        StudyProgram::factory()->count(10)->create();
         News::factory()->count(10)->create();
         Transaction::factory()->count(10)->create();
     }

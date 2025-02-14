@@ -62,7 +62,7 @@ class LecturerController extends Controller
     public function index()
     {
         try {
-            $lecturers = Lecturer::all();
+            $lecturers = Lecturer::orderBy('id', 'desc')->paginate(12);
             return LecturerResource::collection($lecturers);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Failed to retrieve lecturers', 'errors' => $e->getMessage()], 500);

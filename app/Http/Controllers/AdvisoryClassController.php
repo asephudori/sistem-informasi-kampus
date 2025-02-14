@@ -45,7 +45,7 @@ class AdvisoryClassController extends Controller
     public function index()
     {
         try {
-            $advisoryClasses = AdvisoryClass::all();
+            $advisoryClasses = AdvisoryClass::orderBy('id', 'desc')->paginate(12);
             return AdvisoryClassResource::collection($advisoryClasses);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Failed to retrieve advisory classes', 'errors' => $e->getMessage()], 500);

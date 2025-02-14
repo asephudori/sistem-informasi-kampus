@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Classroom;
 use App\Models\Course;
 use App\Models\Faculty;
 use App\Models\GradeFormat;
@@ -36,5 +37,6 @@ class NonForeignKeySeeder extends Seeder
         Faculty::factory()->count(5)->create();
         Semester::factory()->count(5)->create();
         Course::factory()->count(5)->create();
+        Classroom::factory()->count(10)->create();
     }
 }
