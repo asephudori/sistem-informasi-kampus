@@ -69,6 +69,6 @@ class Student extends Model
 
     public function semesterFees()
     {
-        return $this->hasMany(SemesterFee::class);
+        return $this->hasMany(SemesterFee::class, 'student_id', 'user_id'); 
     }
 }

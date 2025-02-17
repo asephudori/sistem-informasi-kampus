@@ -10,7 +10,7 @@ class SemesterFee extends Model
     use HasFactory;
 
     protected $table = 'semester_fee'; 
-    protected $fillable = ['semester_id', 'student_id', 'transaction_id', 'payment_status', 'payment_proof'];
+    protected $fillable = ['semester_id', 'student_id', 'transaction_id', 'payment_status', 'payment_proof', 'due_date'];
 
     public function semester()
     {
@@ -25,5 +25,9 @@ class SemesterFee extends Model
     public function transaction()
     {
         return $this->belongsTo(Transaction::class);
+    }
+
+    public function student() {
+        return $this->belongsTo(Student::class, 'student_id', 'user_id');
     }
 }
