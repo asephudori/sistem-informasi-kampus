@@ -24,7 +24,7 @@ class AdminFactory extends Factory
                 return PermissionRole::inRandomOrder()->first()->id;
             },
             'name' => $this->faker->name(),
-            'role' => $this->faker->randomElement(['super admin', 'admin']),
+            'role' => $this->faker->randomElement(['admin']),
         ];
     }
 }

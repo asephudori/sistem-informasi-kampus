@@ -6,6 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdvisoryClassController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\GradeController;
 use App\Http\Controllers\GradeFormatController;
@@ -24,18 +25,19 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('users', UserController::class);
+    Route::middleware('need_permission')->group(function () {
+        Route::apiResource('users', UserController::class);
+        Route::apiResource('lecturers', LecturerController::class);
+        Route::apiResource('students', StudentController::class);
+        Route::apiResource('admins', AdminController::class);
+        Route::apiResource('permission-roles' ,PermissionRoleController::class);
+        Route::apiResource('permissions', PermissionController::class);
+        Route::apiResource('courses', CourseController::class);
+        Route::apiResource('learning-classes', LearningClassController::class);
+        Route::apiResource('advisory-classes', AdvisoryClassController::class);
+        Route::apiResource('grades', GradeController::class);
+        Route::apiResource('grade-types', GradeTypeController::class);
+        Route::apiResource('grade-formats', GradeFormatController::class);
+        Route::apiResource('classrooms', ClassroomController::class);
+    });
 });
-
-// Route::apiResource('users', UserController::class);
-Route::apiResource('lecturers', LecturerController::class);
-Route::apiResource('students', StudentController::class);
-Route::apiResource('admins', AdminController::class);
-Route::apiResource('permission-roles' ,PermissionRoleController::class);
-Route::apiResource('permissions', PermissionController::class);
-Route::apiResource('courses', CourseController::class);
-Route::apiResource('learning-classes', LearningClassController::class);
-Route::apiResource('advisory-classes', AdvisoryClassController::class);
-Route::apiResource('grades', GradeController::class);
-Route::apiResource('grade-types', GradeTypeController::class);
-Route::apiResource('grade-formats', GradeFormatController::class);

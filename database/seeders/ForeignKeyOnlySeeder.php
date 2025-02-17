@@ -17,7 +17,7 @@ class ForeignKeyOnlySeeder extends Seeder
      */
     public function run(): void
     {
-        PermissionGroup::factory()->count(5)->create();
+        // PermissionGroup::factory()->count(5)->create();
         FacultyLecturer::factory()->count(5)->create();
         StudyProgramLecturer::factory()->count(5)->create();
         ClassMember::factory()->count(10)->create();

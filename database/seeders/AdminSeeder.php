@@ -14,13 +14,24 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory()
-        ->count(3)
-        ->create()
-        ->each(function ($user) {
-            Admin::factory()->create([
-                'user_id' => $user->id,
-            ]);
-        });
+        // Initial data super admin
+        $user = User::create([
+            'username' => 'super.admin.default',
+            'password' => bcrypt('super.admin.default.pw'),
+        ]);
+        Admin::create([
+            'user_id' => $user->id,
+            'name' => 'Super Admin Default',
+            'role' => 'super admin'
+        ]);
+
+        // User::factory()
+        // ->count(3)
+        // ->create()
+        // ->each(function ($user) {
+        //     Admin::factory()->create([
+        //         'user_id' => $user->id,
+        //     ]);
+        // });
     }
 }

@@ -127,8 +127,6 @@ class AdminController extends Controller
     public function destroy(string $id)
     {
         try {
-            $admin = Admin::findOrFail($id);
-            $admin->delete();
             $user = User::findOrFail($id);
             $user->delete();
             return response()->json(['message' => 'Admin deleted successfully']);

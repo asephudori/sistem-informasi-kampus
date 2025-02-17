@@ -22,7 +22,7 @@ class NonForeignKeySeeder extends Seeder
      */
     public function run(): void
     {
-        PermissionRole::factory()->count(3)->create();
+        // PermissionRole::factory()->count(3)->create();
         UniversityInformation::create([
             'name' => 'Techno Net',
             'address' => 'Jl. Ciledug Raya No. 99, Petukangan Utara, Pesanggrahan, Jakarta Selatan',
@@ -31,7 +31,7 @@ class NonForeignKeySeeder extends Seeder
             'logo' => '',
         ]);
         GradeFormat::factory()->count(3)->create();
-        Permission::factory()->count(5)->create();
+        // Permission::factory()->count(5)->create();
         TransactionCategory::factory()->count(5)->create();
         GradeType::factory()->count(5)->create();
         Faculty::factory()->count(5)->create();

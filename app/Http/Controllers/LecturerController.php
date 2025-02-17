@@ -132,9 +132,7 @@ class LecturerController extends Controller
     public function destroy(string $id)
     {
         try {
-            $lecturer = Lecturer::findOrFail($id);
-            $lecturer->delete();
-            $user = User::findOrFail($lecturer->user_id);
+            $user = User::findOrFail($id);
             $user->delete();
             return response()->json(['message' => 'Lecturer deleted successfully'], 200);
         } catch (ModelNotFoundException $e) {
