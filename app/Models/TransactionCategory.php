@@ -10,4 +10,9 @@ class TransactionCategory extends Model
     use HasFactory;
     protected $table = 'transaction_categories';
     protected $fillable = ['name', 'description', 'type'];
+
+    public function transactions() 
+    {
+        return $this->hasMany(Transaction::class); 
+    }
 }

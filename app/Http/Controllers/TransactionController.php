@@ -49,6 +49,55 @@ class TransactionController extends Controller
         }
     }
 
+    
+    public function transactionsByCategory($transaction_category_id)
+    {
+        try {
+            $transactions = Transaction::where('transaction_category_id', $transaction_category_id)
+                                    ->paginate(10); // Or get(), depending on your needs
+
+            if ($transactions->isEmpty()) {
+                return response()->json(['message' => 'No transactions found for this category.'], 200); // Or 404 if you prefer
+            }
+
+            return response()->json(['data' => $transactions], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to retrieve transactions.', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+
+    public function transactionsByCategoryReport(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'transaction_category_id' => 'required|exists:transaction_categories,id',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 400);
+        }
+
+        try {
+            $transaction_category_id = $request->input('transaction_category_id');
+            $start_date = $request->input('start_date');
+            $end_date = $request->input('end_date');
+
+            $transactions = Transaction::where('transaction_category_id', $transaction_category_id)
+                ->whereBetween('date', [$start_date, $end_date])
+                ->get();
+
+            if ($transactions->isEmpty()) {
+                return response()->json(['message' => 'No transactions found for this category within the specified date range.'], 200); // Or 404
+            }
+
+            return response()->json(['data' => $transactions], 200);
+
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to retrieve transactions.', 'error' => $e->getMessage()], 500);
+        }
+    }
 
     public function update(Request $request, $id)
     {

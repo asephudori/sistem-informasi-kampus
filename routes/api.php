@@ -30,36 +30,40 @@ Route::get('/user', function (Request $request) {
 
 // route tambahan
 // menampilkan schedules dengan info kelas
-Route::get('/schedules/{schedule}/with-class-info', [ScheduleController::class, 'showWithClassInfo']);
+Route::get('/schedules/{schedule}/with_class_info', [ScheduleController::class, 'showWithClassInfo']);
 // menampilkan schedules berdasarkan class_id
 Route::get('/schedules/class/{classId}', [ScheduleController::class, 'getSchedulesByClassId']);
 // menampilkan study program lecturer berdasarkan faculty id
-Route::get('/study-program-lecturers/faculty/{facultyId}', [StudyProgramLecturerController::class, 'lecturersByFaculty']);
+Route::get('/study_program_lecturers/faculty/{facultyId}', [StudyProgramLecturerController::class, 'lecturersByFaculty']);
 // menampilkan class member by class id
-Route::get('/class-members/class/{classId}', [ClassMemberController::class, 'getClassMembersByClass']);
+Route::get('/class_members/class/{classId}', [ClassMemberController::class, 'getClassMembersByClass']);
+// menampilkan transaksi per kategori
+Route::get('/transactions/category/{transaction_category_id}', [TransactionController::class, 'transactionsByCategory']);
+// menampilkan transaksi report lengkap dengan category id dan rentang waktu
+Route::get('/transactions/report', [TransactionController::class, 'transactionsByCategoryReport']);
 
 // Payment reminder routes
-Route::post('/semester-fee/send-reminder', [PaymentReminderController::class, 'sendReminder']);
-Route::post('/semester-fee/send-reminder-manual', [PaymentReminderController::class, 'sendReminderManual']);
-Route::post('/semester-fee/upload-payment-proof/{semesterFeeId}', [PaymentReminderController::class, 'uploadPaymentProof']);
-Route::post('/semester-fee/send-success-notification', [PaymentReminderController::class, 'sendSuccessNotification']);
-Route::post('/semester-fee/set-due-date', [PaymentReminderController::class, 'setDueDate']);
-Route::post('/semester-fee/edit-due-date', [PaymentReminderController::class, 'editDueDate']);
-Route::get('/semester-fee/payment-proof', [PaymentReminderController::class, 'getPaymentProofs']);
-Route::get('/semester-fee/admins', [PaymentReminderController::class, 'getAdmins']);
+Route::post('/semester_fees/send_reminder', [PaymentReminderController::class, 'sendReminder']);
+Route::post('/semester_fees/send_reminder_manual', [PaymentReminderController::class, 'sendReminderManual']);
+Route::post('/semester_fees/upload_payment_proof/{semesterFeeId}', [PaymentReminderController::class, 'uploadPaymentProof']);
+Route::post('/semester_fees/send_success_notification', [PaymentReminderController::class, 'sendSuccessNotification']);
+Route::post('/semester_fees/set_due_date', [PaymentReminderController::class, 'setDueDate']);
+Route::post('/semester_fees/edit_due_date', [PaymentReminderController::class, 'editDueDate']);
+Route::get('/semester_fees/payment_proof', [PaymentReminderController::class, 'getPaymentProofs']);
+Route::get('/semester_fees/admins', [PaymentReminderController::class, 'getAdmins']);
 
 Route::apiResource('users', UserController::class);
 Route::apiResource('lecturers', LecturerController::class);
 Route::apiResource('students', StudentController::class);
 Route::apiResource('faculties', FacultyController::class);
-Route::apiResource('study-programs', StudyProgramController::class);
+Route::apiResource('study_programs', StudyProgramController::class);
 Route::apiResource('semesters', SemesterController::class);
 Route::apiResource('schedules', ScheduleController::class);
-Route::apiResource('faculty-lecturers', FacultyLecturerController::class);
-Route::apiResource('study-program-lecturers', StudyProgramLecturerController::class);
-Route::apiResource('class-members', ClassMemberController::class);
+Route::apiResource('faculty_lecturers', FacultyLecturerController::class);
+Route::apiResource('study_program_lecturers', StudyProgramLecturerController::class);
+Route::apiResource('class_members', ClassMemberController::class);
 Route::apiResource('news', NewsController::class);
-Route::apiResource('university-information', UniversityInformationController::class);
-Route::apiResource('semester-fee', SemesterFeeController::class);
-Route::apiResource('transaction-category', TransactionCategoryController::class);
-Route::apiResource('transaction', TransactionController::class);
+Route::apiResource('university_informations', UniversityInformationController::class);
+Route::apiResource('semester_fees', SemesterFeeController::class);
+Route::apiResource('transaction_categories', TransactionCategoryController::class);
+Route::apiResource('transactions', TransactionController::class);

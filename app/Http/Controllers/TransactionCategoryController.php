@@ -88,14 +88,26 @@ class TransactionCategoryController extends Controller
 
     /**
      * Remove the specified resource from storage.
-     */
+     */    
     public function destroy(TransactionCategory $transactionCategory)
     {
+        $transactions = $transactionCategory->transactions; // Retrieve related transactions
+    
+        if ($transactions->count() > 0) {
+            return response()->json([
+                'message' => 'This transaction category cannot be deleted because it has associated transactions. Please delete the transactions first.',
+                'transactions' => $transactions // Include transaction data in the response
+            ], 400);
+        }
+    
         try {
-            $transactionCategory->delete();
-            return response()->json(['message' => 'Transaction category deleted successfully.'], 204); // 204 No Content
+            $transactionCategory->delete(); // Soft delete
+            return response()->json(['message' => 'Transaction category deleted successfully.'], 200);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to delete transaction category.', 'error' => $e->getMessage()], 500);
+            return response()->json([
+                'message' => 'Failed to delete transaction category.', 
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 }
