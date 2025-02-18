@@ -18,26 +18,28 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PermissionRoleController;
 
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
-
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::middleware('need_permission')->group(function () {
+    Route::get('/user', function (Request $request) {  // Route contoh bawaan laravel
+        return $request->user();
+    });
+
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::middleware('check_permission')->group(function () {
         Route::apiResource('users', UserController::class);
-        Route::apiResource('lecturers', LecturerController::class);
-        Route::apiResource('students', StudentController::class);
         Route::apiResource('admins', AdminController::class);
         Route::apiResource('permission-roles' ,PermissionRoleController::class);
         Route::apiResource('permissions', PermissionController::class);
-        Route::apiResource('courses', CourseController::class);
-        Route::apiResource('learning-classes', LearningClassController::class);
-        Route::apiResource('advisory-classes', AdvisoryClassController::class);
-        Route::apiResource('grades', GradeController::class);
-        Route::apiResource('grade-types', GradeTypeController::class);
-        Route::apiResource('grade-formats', GradeFormatController::class);
-        Route::apiResource('classrooms', ClassroomController::class);
+
+        Route::apiResource('grade-types', GradeTypeController::class);  // lecturer
+        Route::apiResource('grade-formats', GradeFormatController::class);  // lecturer
+        Route::apiResource('classrooms', ClassroomController::class);  // lecturer
+
+        Route::apiResource('lecturers', LecturerController::class);  // student, lecturer
+        Route::apiResource('students', StudentController::class);  // student, lecturer
+        Route::apiResource('courses', CourseController::class);  // student, lecturer
+        Route::apiResource('learning-classes', LearningClassController::class);  // student, lecturer
+        Route::apiResource('advisory-classes', AdvisoryClassController::class);  // student, lecturer
+        Route::apiResource('grades', GradeController::class);  // student, lecturer
     });
 });

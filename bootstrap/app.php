@@ -15,7 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'need_permission' => CheckPermission::class
+            'check_permission' => CheckPermission::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

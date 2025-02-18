@@ -42,14 +42,14 @@ class LecturerController extends Controller
         }
 
         $rules = [
-            'nidn' => ($useSometimes ? 'sometimes|' : 'required|') . 'unique:lecturers,nidn',
+            'nidn' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'unique:lecturers,nidn',
             'name' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
             'email' => ($useSometimes ? 'sometimes|' : 'required|') . 'email|max:255',
-            'phone' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
-            'address' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
+            'phone' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'max:255',
+            'address' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'max:255',
             'entry_date' => ($useSometimes ? 'sometimes|' : 'required|') . 'date',
-            'birthplace' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
-            'birthdate' => ($useSometimes ? 'sometimes|' : 'required|') . 'date',
+            'birthplace' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'max:255',
+            'birthdate' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'date',
             'gender' => ($useSometimes ? 'sometimes|' : 'required|') . 'in:male, female',
         ];
 
