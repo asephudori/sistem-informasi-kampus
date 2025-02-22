@@ -41,6 +41,8 @@ Route::get('/class_members/class/{classId}', [ClassMemberController::class, 'get
 Route::get('/transactions/category/{transaction_category_id}', [TransactionController::class, 'transactionsByCategory']);
 // menampilkan transaksi report lengkap dengan category id dan rentang waktu
 Route::get('/transactions/report', [TransactionController::class, 'transactionsByCategoryReport']);
+// menampilkan laporan keuangan
+Route::post('/transactions/financial-report', [TransactionController::class, 'financialReport']);
 
 // Payment reminder routes
 Route::post('/semester_fees/send_reminder', [PaymentReminderController::class, 'sendReminder']);
