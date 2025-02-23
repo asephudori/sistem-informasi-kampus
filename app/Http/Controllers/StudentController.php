@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use App\Http\Resources\StudentResource;
-use App\Http\Resources\StudentCollection;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
@@ -20,22 +19,43 @@ class StudentController extends Controller
         ]);
     }
 
-    private function validatedStudentData(Request $request)
+    private function validatedStudentData(Request $request, bool $useSometimes = false)
     {
-        return $request->validate([
-            'advisory_class_id' => 'nullable|exists:advisory_classes,id',
-            'study_program_id' => 'nullable|exists:study_programs,id',
-            'nim' => 'required|unique:students,nim|max:255',  // Need discussion
-            'name' => 'required|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|max:255',
-            'birthplace' => 'required|max:255',
-            'birthdate' => 'required|date',
-            'home_address' => 'required|max:255',
-            'current_address' => 'required|max:255',
-            'home_city_district' => 'required|max:255',
-            'home_postal_code' => 'required|max:255',
-        ]);
+        if (empty($request->all())) {
+            $jsonData = trim($request->getContent());
+
+            if (!empty($jsonData)) {
+                $jsonData = preg_replace('/,\s*}/', '}', $jsonData);
+
+                $decodedJson = json_decode($jsonData, true);
+
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $request->merge($decodedJson);
+                } else {
+                    return response()->json([
+                        'message' => 'Invalid JSON format',
+                        'errors' => json_last_error_msg()
+                    ], 400);
+                }
+            }
+        }
+
+        $rules = [
+            'advisory_class_id' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'exists:advisory_classes,id',
+            'study_program_id' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'exists:study_programs,id',
+            'name' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
+            'email' => ($useSometimes ? 'sometimes|' : 'required|') . 'email|max:255',
+            'phone' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
+            'birthplace' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
+            'birthdate' => ($useSometimes ? 'sometimes|' : 'required|') . 'date',
+            'home_address' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
+            'current_address' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
+            'home_city_district' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
+            'home_postal_code' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
+            'gender' => ($useSometimes ? 'sometimes|' : 'required|') . 'in:male, female',
+        ];
+
+        return $request->validate($rules);
     }
 
     /**
@@ -45,18 +65,10 @@ class StudentController extends Controller
     {
         try {
             $students = Student::all();
-            return new StudentCollection($students);
+            return StudentResource::collection($students);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Failed to retrieve students', 'errors' => $e->getMessage()], 500);
         }
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -74,9 +86,12 @@ class StudentController extends Controller
             ]);
             $student = Student::create(array_merge(
                 $validatedStudentData,
-                ['user_id' => $user->id]
+                [
+                    'user_id' => $user->id,
+                    'nim' => $user->id,
+                ]
             ));
-            return response()->json(['message' => 'Student created successfully', 'student' => $student]);
+            return response()->json(['message' => 'Student created successfully', 'student' => new StudentResource($student)], 201);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
         } catch (\Exception $e) {
@@ -100,26 +115,18 @@ class StudentController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
     {
         try {
             $student = Student::findOrFail($id);
-
-            $validatedStudentData = $this->validatedStudentData($request);
-
+            $validatedStudentData = $this->validatedStudentData($request, true);
             $student->update($validatedStudentData);
-            return response()->json(['message' => 'Student updated successfully', 'student' => $student]);
-        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Student updated successfully', 'student' => new StudentResource($student)]);
+        } catch (ValidationException $e) {
+            return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
+        }catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Student not found'], 404);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Failed to update student', 'errors' => $e->getMessage()], 500);

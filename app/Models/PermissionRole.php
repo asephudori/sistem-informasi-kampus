@@ -13,7 +13,7 @@ class PermissionRole extends Model
 
     public function permissions()
     {
-        return $this->belongsToMany(Permission::class);
+        return $this->belongsToMany(Permission::class, 'permission_groups');
     }
 
     public function admins()

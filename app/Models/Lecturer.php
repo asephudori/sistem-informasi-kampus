@@ -8,18 +8,26 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Lecturer extends Model
 {
     use HasFactory;
+
+    protected $table = 'lecturers';
+
+    protected $primaryKey = 'user_id';
+
+    public $incrementing = false;
+
+    protected $keyType = 'int';
+
     
-    protected $table = 'lecturers'; 
     protected $fillable = [
-        'user_id', 
-        'nidn', 
-        'name', 
-        'email', 
-        'phone', 
-        'address', 
-        'entry_date', 
-        'birthplace', 
-        'birthdate', 
+        'user_id',
+        'nidn',
+        'name',
+        'email',
+        'phone',
+        'address',
+        'entry_date',
+        'birthplace',
+        'birthdate',
         'gender'
     ];
 
@@ -27,12 +35,12 @@ class Lecturer extends Model
     {
         return $this->belongsTo(User::class);
     }
-    
+
     public function advisoryClass()
     {
         return $this->hasMany(AdvisoryClass::class);
     }
-    
+
         public function learningClasses()
         {
             return $this->hasMany(LearningClass::class);

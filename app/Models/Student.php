@@ -11,15 +11,10 @@ class Student extends Model
 
     protected $table = 'students';
 
-    // Tentukan 'user_id' sebagai primary key
     protected $primaryKey = 'user_id';
-
-    // Jika 'user_id' bukan auto-incrementing
     public $incrementing = false;
+    protected $keyType = 'int';
 
-    // Tentukan tipe data primary key
-    protected $keyType = 'int'; // Sesuaikan dengan tipe data 'user_id'
-    
     protected $fillable = [
         'user_id',
         'advisory_class_id',
@@ -39,17 +34,17 @@ class Student extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function advisoryClass()
     {
-        return $this->belongsTo(AdvisoryClass::class);
+        return $this->belongsTo(AdvisoryClass::class, 'advisory_class_id');
     }
 
     public function studyProgram()
     {
-        return $this->belongsTo(StudyProgram::class);
+        return $this->belongsTo(StudyProgram::class, 'study_program_id');
     }
 
     public function classMembers()

@@ -9,15 +9,20 @@ class Course extends Model
 {
     use HasFactory;
     protected $table = 'courses';
-    protected $fillable = ['name', 'prequisite'];
+    protected $fillable = ['name', 'prerequisite_id'];
 
     public function learningClasses()
     {
         return $this->hasMany(LearningClass::class);
     }
 
-    public function prequisiteCourse()
+    public function prerequisite()
     {
-        return $this->belongsTo(Course::class, 'prequisite');
+        return $this->belongsTo(Course::class, 'prerequisite_id');
+    }
+
+    public function dependentCourses()
+    {
+        return $this->hasMany(Course::class, 'prerequisite_id');
     }
 }

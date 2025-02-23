@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class LearningClass extends Model
 {
     use HasFactory;
-    
+
     protected $table = 'classes';
 
     protected $fillable = ['lecturer_id', 'course_id', 'semester_id'];
@@ -35,7 +35,7 @@ class LearningClass extends Model
 
     public function students()
     {
-        return $this->belongsToMany(Student::class);
+        return $this->belongsToMany(Student::class, 'class_members', 'class_id', 'student_id');
     }
 
     public function schedules()
