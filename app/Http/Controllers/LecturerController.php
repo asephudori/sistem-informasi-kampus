@@ -42,14 +42,14 @@ class LecturerController extends Controller
         }
 
         $rules = [
-            'nidn' => ($useSometimes ? 'sometimes|' : 'required|') . 'unique:lecturers,nidn',
+            'nidn' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'unique:lecturers,nidn',
             'name' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
             'email' => ($useSometimes ? 'sometimes|' : 'required|') . 'email|max:255',
-            'phone' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
-            'address' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
+            'phone' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'max:255',
+            'address' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'max:255',
             'entry_date' => ($useSometimes ? 'sometimes|' : 'required|') . 'date',
-            'birthplace' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
-            'birthdate' => ($useSometimes ? 'sometimes|' : 'required|') . 'date',
+            'birthplace' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'max:255',
+            'birthdate' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'date',
             'gender' => ($useSometimes ? 'sometimes|' : 'required|') . 'in:male, female',
         ];
 
@@ -62,7 +62,7 @@ class LecturerController extends Controller
     public function index()
     {
         try {
-            $lecturers = Lecturer::all();
+            $lecturers = Lecturer::orderBy('id', 'desc')->paginate(12);
             return LecturerResource::collection($lecturers);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Failed to retrieve lecturers', 'errors' => $e->getMessage()], 500);
@@ -132,9 +132,7 @@ class LecturerController extends Controller
     public function destroy(string $id)
     {
         try {
-            $lecturer = Lecturer::findOrFail($id);
-            $lecturer->delete();
-            $user = User::findOrFail($lecturer->user_id);
+            $user = User::findOrFail($id);
             $user->delete();
             return response()->json(['message' => 'Lecturer deleted successfully'], 200);
         } catch (ModelNotFoundException $e) {

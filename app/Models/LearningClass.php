@@ -11,7 +11,7 @@ class LearningClass extends Model
 
     protected $table = 'classes';
 
-    protected $fillable = ['lecturer_id', 'course_id', 'semester_id'];
+    protected $fillable = ['lecturer_id', 'course_id', 'semester_id', 'study_program_id', 'classroom_id'];
 
     public function lecturer()
     {
@@ -28,7 +28,17 @@ class LearningClass extends Model
         return $this->belongsTo(Semester::class);
     }
 
-    public function class_members()
+    public function studyProgram()
+    {
+        return $this->belongsTo(StudyProgram::class);
+    }
+
+    public function classroom()
+    {
+        return $this->belongsTo(Classroom::class);
+    }
+
+    public function classMembers()
     {
         return $this->hasMany(ClassMember::class);
     }

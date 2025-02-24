@@ -16,7 +16,7 @@ class UserController extends Controller
     public function index()
     {
         try {
-            $users = User::all();
+            $users = User::orderBy('id', 'desc')->paginate(12);
             return UserResource::collection($users);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Failed to retrieve users', 'errors' => $e->getMessage()], 500);

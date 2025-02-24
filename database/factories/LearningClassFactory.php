@@ -5,6 +5,8 @@ namespace Database\Factories;
 use App\Models\Course;
 use App\Models\Lecturer;
 use App\Models\Semester;
+use App\Models\Classroom;
+use App\Models\StudyProgram;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -28,6 +30,12 @@ class LearningClassFactory extends Factory
             },
             'semester_id' => function () {
                 return Semester::inRandomOrder()->first()->id;
+            },
+            'study_program_id' => function () {
+                return StudyProgram::inRandomOrder()->first()->id;
+            },
+            'classroom_id' => function () {
+                return Classroom::inRandomOrder()->first()->id;
             },
         ];
     }

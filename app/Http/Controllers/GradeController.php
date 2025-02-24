@@ -47,7 +47,7 @@ class GradeController extends Controller
     public function index()
     {
         try {
-            $grades = Grade::all();
+            $grades = Grade::orderBy('id', 'desc')->paginate(12);
             return GradeResource::collection($grades);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Failed to retrieve grades', 'errors' => $e->getMessage()], 500);

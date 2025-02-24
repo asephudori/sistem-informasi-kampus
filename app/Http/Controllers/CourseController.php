@@ -47,7 +47,7 @@ class CourseController extends Controller
             $courses = Course::all();
             return CourseResource::collection($courses);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to retrieve courses', 'errors' => $e->getMessage()], 500);;
+            return response()->json(['message' => 'Failed to retrieve courses', 'errors' => $e->getMessage()], 500);
         }
     }
 

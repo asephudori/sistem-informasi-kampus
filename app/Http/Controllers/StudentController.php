@@ -45,13 +45,13 @@ class StudentController extends Controller
             'study_program_id' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'exists:study_programs,id',
             'name' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
             'email' => ($useSometimes ? 'sometimes|' : 'required|') . 'email|max:255',
-            'phone' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
-            'birthplace' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
-            'birthdate' => ($useSometimes ? 'sometimes|' : 'required|') . 'date',
-            'home_address' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
-            'current_address' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
-            'home_city_district' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
-            'home_postal_code' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
+            'phone' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'max:255',
+            'birthplace' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'max:255',
+            'birthdate' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'date',
+            'home_address' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'max:255',
+            'current_address' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'max:255',
+            'home_city_district' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'max:255',
+            'home_postal_code' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'max:255',
             'gender' => ($useSometimes ? 'sometimes|' : 'required|') . 'in:male, female',
         ];
 
@@ -64,7 +64,7 @@ class StudentController extends Controller
     public function index()
     {
         try {
-            $students = Student::all();
+            $students = Student::orderBy('id', 'desc')->paginate(12);
             return StudentResource::collection($students);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Failed to retrieve students', 'errors' => $e->getMessage()], 500);
@@ -139,8 +139,6 @@ class StudentController extends Controller
     public function destroy(string $id)
     {
         try {
-            $student = Student::findOrFail($id);
-            $student->delete();
             $user = User::findOrFail($id);
             $user->delete();
             return response()->json(['message' => 'Student deleted successfully']);

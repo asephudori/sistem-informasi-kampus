@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Classroom;
 use Illuminate\Http\Request;
-use App\Models\LearningClass;
-use App\Http\Resources\LearningClassResource;
+use App\Http\Resources\ClassroomResource;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
-class LearningClassController extends Controller
+class ClassroomController extends Controller
 {
     private function validatedData(Request $request, bool $useSometimes = false)
     {
@@ -32,25 +32,21 @@ class LearningClassController extends Controller
         }
 
         $rules = [
-            'lecturer_id' => ($useSometimes ? 'sometimes|' : 'required|') . 'exists:lecturers,user_id',
-            'course_id' => ($useSometimes ? 'sometimes|' : 'required|') . 'exists:courses,id',
-            'semester_id' => ($useSometimes ? 'sometimes|' : 'required|') . 'exists:semesters,id',
-            'classroom_id' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'exists:classroomss,id',
+            'name' => ($useSometimes ? 'sometimes|' : 'required|') . 'max:255',
         ];
 
         return $request->validate($rules);
     }
-
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         try {
-            $learningClasses = LearningClass::orderBy('id', 'desc')->paginate(12);
-            return LearningClassResource::collection($learningClasses);
+            $classrooms = Classroom::all();
+            return ClassroomResource::collection($classrooms);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to retrieve learning classes', 'errors' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Failed to retrieve classrooms', 'errors' => $e->getMessage()], 500);
         }
     }
 
@@ -62,12 +58,12 @@ class LearningClassController extends Controller
         try {
             $validatedData = $this->validatedData($request);
 
-            $learningClass = LearningClass::create(array_merge($validatedData));
-            return response()->json(['message' => 'Learning class created successfully', 'learning_class' => new LearningClassResource($learningClass)], 201);
+            $classroom = Classroom::create(array_merge($validatedData));
+            return response()->json(['message' => 'Course created successfully', 'classroom' => new ClassroomResource($classroom)], 201);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to create learning class', 'errors' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Failed to create classroom', 'errors' => $e->getMessage()], 500);
         }
     }
 
@@ -77,12 +73,12 @@ class LearningClassController extends Controller
     public function show(string $id)
     {
         try {
-            $learningClass = LearningClass::findOrFail($id);
-            return new LearningClassResource($learningClass);
+            $classroom = Classroom::findOrFail($id);
+            return new ClassroomResource($classroom);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'LearningClass not found'], 404);
+            return response()->json(['message' => 'Classroom not found'], 404);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to retrieve learning classe', 'errors' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Failed to retrieve classroom', 'errors' => $e->getMessage()], 500);
         }
     }
 
@@ -92,16 +88,22 @@ class LearningClassController extends Controller
     public function update(Request $request, string $id)
     {
         try {
-            $learningClass = LearningClass::findOrFail($id);
+            $classroom = Classroom::findOrFail($id);
             $validatedData = $this->validatedData($request, true);
-            $learningClass->update($validatedData);
-            return response()->json(['message' => 'Learning class updated successfully', 'learning_class' => new LearningClassResource($learningClass)]);
+
+            if (!empty($validatedData['prerequisite_id'])) {
+                if ($validatedData['prerequisite_id'] == $id) {
+                    return response()->json(['message' => 'Classroom id cannot be prerequisite_id of it self'], 400);
+                }
+            }
+            $classroom->update($validatedData);
+            return response()->json(['message' => 'Classroom updated successfully', 'classroom' => new ClassroomResource($classroom)]);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Learning class not found'], 404);
+            return response()->json(['message' => 'Classroom not found'], 404);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to update learning class', 'errors' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Failed to update classroom', 'errors' => $e->getMessage()], 500);
         }
     }
 
@@ -111,14 +113,13 @@ class LearningClassController extends Controller
     public function destroy(string $id)
     {
         try {
-            $learningClass = LearningClass::findOrFail($id);
-            
-            $learningClass->delete();
-            return response()->json(['message' => 'Learning class deleted successfully']);
+            $classroom = Classroom::findOrFail($id);
+            $classroom->delete();
+            return response()->json(['message' => 'Classroom deleted successfully']);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Learning class not found'], 404);
+            return response()->json(['message' => 'Classroom not found'], 404);
         } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to delete learning class', 'errors' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Failed to delete classroom', 'errors' => $e->getMessage()], 500);
         }
     }
 }
