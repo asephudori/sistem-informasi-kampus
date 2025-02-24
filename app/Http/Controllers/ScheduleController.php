@@ -80,7 +80,7 @@ class ScheduleController extends Controller
     {
         try {
             $schedule->delete();
-            return response()->noContent();
+            return response()->json(['message' => 'Schedule deleted'], 200);
         } catch (Exception $e) {
             return response()->json(['error' => 'Failed to delete schedule: ' . $e->getMessage()], 500);
         }

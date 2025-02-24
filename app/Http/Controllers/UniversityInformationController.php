@@ -85,7 +85,7 @@ class UniversityInformationController extends Controller
         try {
             $universityInformation = UniversityInformation::findOrFail($id);
             $universityInformation->delete();
-            return response()->json(['message' => 'University information deleted'], 204);
+            return response()->json(['message' => 'University information deleted'], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'University information not found'], 404);
         } catch (Throwable $e) {

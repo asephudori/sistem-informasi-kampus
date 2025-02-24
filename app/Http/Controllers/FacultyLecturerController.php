@@ -83,7 +83,7 @@ class FacultyLecturerController extends Controller
     {
         try {
             $facultyLecturer->delete();
-            return response()->json(['message' => 'Faculty Lecturer deleted successfully'], 204);
+            return response()->json(['message' => 'Faculty Lecturer deleted successfully'], 200);
         } catch (Throwable $e) {
             return response()->json(['message' => 'Failed to delete faculty lecturer', 'error' => $e->getMessage()], 500);
         }

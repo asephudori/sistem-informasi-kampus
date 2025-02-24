@@ -106,7 +106,7 @@ class ClassMemberController extends Controller
         try {
             $classMember = ClassMember::findOrFail($id); // Use findOrFail
             $classMember->delete();
-            return response()->json(['message' => 'Class member deleted'], 204);
+            return response()->json(['message' => 'Class member deleted'], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Class member not found'], 404);
         } catch (Throwable $e) {

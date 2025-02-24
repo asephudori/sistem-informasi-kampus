@@ -108,7 +108,7 @@ class SemesterFeeController extends Controller
         try {
             $semesterFee = SemesterFee::findOrFail($id);
             $semesterFee->delete();
-            return response()->json(['message' => 'Semester fee deleted'], 204);
+            return response()->json(['message' => 'Semester fee deleted'], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Semester fee not found'], 404);
         } catch (Throwable $e) {

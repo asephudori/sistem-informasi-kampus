@@ -11,12 +11,6 @@ use Throwable;
 
 class NewsController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware('auth'); // Memastikan pengguna sudah login
-    //     $this->middleware('newsRole')->except(['index']); // Memeriksa role untuk akses selain index
-    // }
-
     public function index(Request $request)
     {
         try {
@@ -135,7 +129,7 @@ class NewsController extends Controller
         try {
             $news = News::findOrFail($id);
             $news->delete();
-            return response()->json(['message' => 'News deleted'], 204);
+            return response()->json(['message' => 'News deleted'], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'News not found'], 404);
         } catch (Throwable $e) {

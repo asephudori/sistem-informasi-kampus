@@ -84,7 +84,7 @@ class StudyProgramLecturerController extends Controller
     {
         try {
             $studyProgramLecturer->delete();
-            return response()->json(['message' => 'Study Program Lecturer deleted successfully'], 204);
+            return response()->json(['message' => 'Study Program Lecturer deleted successfully'], 200);
         } catch (Throwable $e) {
             return response()->json(['message' => 'Failed to delete study program lecturer', 'error' => $e->getMessage()], 500);
         }
