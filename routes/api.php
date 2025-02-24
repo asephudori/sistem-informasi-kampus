@@ -31,26 +31,6 @@ use App\Http\Controllers\UniversityInformationController;
 use App\Http\Controllers\PaymentReminderController;
 use App\Http\Controllers\PaymentController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
-
-// Route::middleware('auth:sanctum')->group(function () {
-//     Route::apiResource('users', UserController::class);
-// });
-
-Route::apiResource('users', UserController::class);
-Route::apiResource('lecturers', LecturerController::class);
-Route::apiResource('students', StudentController::class);
-Route::apiResource('admins', AdminController::class);
-Route::apiResource('permission-roles' ,PermissionRoleController::class);
-Route::apiResource('permissions', PermissionController::class);
-Route::apiResource('courses', CourseController::class);
-Route::apiResource('learning-classes', LearningClassController::class);
-Route::apiResource('advisory-classes', AdvisoryClassController::class);
-Route::apiResource('grades', GradeController::class);
-Route::apiResource('grade-types', GradeTypeController::class);
-Route::apiResource('grade-formats', GradeFormatController::class);
 Route::apiResource('faculties', FacultyController::class);
 Route::apiResource('study-programs', StudyProgramController::class);
 Route::apiResource('semesters', SemesterController::class);
@@ -63,6 +43,7 @@ Route::apiResource('university-informations', UniversityInformationController::c
 Route::apiResource('semester-fees', SemesterFeeController::class);
 Route::apiResource('transaction-categories', TransactionCategoryController::class);
 Route::apiResource('transactions', TransactionController::class);
+
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
