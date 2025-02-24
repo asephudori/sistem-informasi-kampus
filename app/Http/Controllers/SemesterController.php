@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Semester;
+use App\Models\LearningClass;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Database\QueryException;
 
 class SemesterController extends Controller
 {
@@ -87,7 +89,22 @@ class SemesterController extends Controller
             }
 
             $semester->delete();
+
             return response()->json(['message' => 'Semester deleted successfully'], 200);
+
+        } catch (QueryException $e) {
+            if ($e->getCode() == '23000') { // Foreign key constraint violation code
+                $relatedClasses = LearningClass::where('semester_id', $id)->get();
+
+                return response()->json([
+                    'message' => 'Semester cannot be deleted due to existing related data.',
+                    'error' => 'Integrity constraint violation',
+                    'related_classes' => $relatedClasses,
+                ], 409); // 409 Conflict
+            }
+
+            return response()->json(['message' => 'An error occurred while deleting the semester', 'error' => $e->getMessage()], 500);
+
         } catch (\Exception $e) {
             return response()->json(['message' => 'An error occurred while deleting the semester', 'error' => $e->getMessage()], 500);
         }
