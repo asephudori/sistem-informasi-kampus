@@ -8,9 +8,13 @@ use Illuminate\Http\Request;
 
 trait Loggable
 {
-    protected function logActivity($name, $detail = null, $category = 'Default')
+    protected function logActivity($name, $detail = null, $category = 'Default', $startPeriode = null, $endPeriode = null)
     {
         $request = app(Request::class);
+
+        if ($startPeriode && $endPeriode) {
+            $detail .= ", Start Periode: " . $startPeriode . ", End Periode: " . $endPeriode;
+        }
 
         ActivityLog::create([
             'activity_name' => $name,
