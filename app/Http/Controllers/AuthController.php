@@ -27,16 +27,31 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
+        $relatedModel = match ($user->role()) {
+            'student' => $user->student,
+            'lecturer' => $user->lecturer,
+            'admin' => $user->lecturer,
+            default => null,
+        };
+
+        $name = $relatedModel?->name ?? null;
+        $email = in_array($user->role(), ['student', 'lecturer']) ? $relatedModel?->email ?? null : null;
+
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'user_role' => $user->role()
+            'user' => [
+                'id' => $user->id,
+                'role' => $user->role(),
+                'name' => $name,
+                'email' => $email,
+            ]
         ]);
     }
 
     public function logout(Request $request)
     {
-        $request->user()->tokens()->delete();
+        $request->user()->currentAccessToken()->delete();
 
         return response()->json([
             'message' => 'Logged out successfully'

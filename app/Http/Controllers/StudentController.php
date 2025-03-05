@@ -64,7 +64,7 @@ class StudentController extends Controller
     public function index()
     {
         try {
-            $students = Student::orderBy('id', 'desc')->paginate(12);
+            $students = Student::orderBy('user_id', 'desc')->paginate(12);
             return StudentResource::collection($students);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Failed to retrieve students', 'errors' => $e->getMessage()], 500);

@@ -30,6 +30,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UniversityInformationController;
 use App\Http\Controllers\PaymentReminderController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\UserInfoController;
 
 Route::apiResource('faculties', FacultyController::class);
 Route::apiResource('study-programs', StudyProgramController::class);
@@ -52,7 +53,11 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::middleware('check_permission')->group(function () {
+
+    Route::get('/user-info', [UserInfoController::class, 'index']);
+    Route::put('/user-info', [UserInfoController::class, 'update']);
+
+    Route::middleware(['check_permission', 'update.last_used'])->group(function () {
         Route::apiResource('users', UserController::class);
         Route::apiResource('admins', AdminController::class);
         Route::apiResource('permission-roles' ,PermissionRoleController::class);
@@ -96,3 +101,7 @@ Route::post('/semester-fees/set-due-date', [PaymentReminderController::class, 's
 Route::post('/semester-fees/edit-due-date', [PaymentReminderController::class, 'editDueDate']);
 Route::get('/semester-fees/payment-proof', [PaymentReminderController::class, 'getPaymentProofs']);
 Route::get('/semester-fees/admins', [PaymentReminderController::class, 'getAdmins']);
+
+Route::get('/test', function () {
+    return response()->json(['message' => 'success'], 200);
+});
