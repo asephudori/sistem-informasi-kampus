@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ClassMember;
 use App\Models\User;
 use App\Models\LearningClass;
+use App\Traits\Loggable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -12,6 +13,7 @@ use Throwable; // Import Throwable for catching any exception
 
 class ClassMemberController extends Controller
 {
+    use Loggable;
     // show all class member with search func
     public function index(Request $request)
     {
@@ -56,6 +58,7 @@ class ClassMemberController extends Controller
             }
 
             $classMember = ClassMember::create($request->all());
+            $this->logActivity('New Class Member Created!', 'Class Member Detail: ' . $classMember, "Create");
             return response()->json($classMember, 201);
         } catch (Throwable $e) {
             return response()->json(['message' => 'Error creating class member', 'error' => $e->getMessage()], 500);
@@ -92,6 +95,7 @@ class ClassMemberController extends Controller
             }
 
             $classMember->update($request->all());
+            $this->logActivity('New Class Member Updated!', 'Class Member Detail: ' . $classMember, "Update");
             return response()->json($classMember, 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Class member not found'], 404);
@@ -106,6 +110,7 @@ class ClassMemberController extends Controller
         try {
             $classMember = ClassMember::findOrFail($id); // Use findOrFail
             $classMember->delete();
+            $this->logActivity('New Class Member Deleted!', 'Class Member Detail: ' . $classMember, "Delete");
             return response()->json(['message' => 'Class member deleted'], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Class member not found'], 404);
