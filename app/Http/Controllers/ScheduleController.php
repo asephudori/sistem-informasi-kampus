@@ -39,7 +39,7 @@ class ScheduleController extends Controller
 
         try {
             $schedule = Schedule::create($validator->validated());
-            $this->logActivity('New Schedule Created!', 'Schedule Detail: ' . $schedule, "Create");
+            $this->logActivity('New Schedule Created!', 'Activity Detail: ' . $schedule, "Create");
             return response()->json($schedule, 201);
         } catch (Exception $e) {
             return response()->json(['error' => 'Failed to create schedule: ' . $e->getMessage()], 500);
@@ -72,7 +72,7 @@ class ScheduleController extends Controller
 
         try {
             $schedule->update($validator->validated());
-            $this->logActivity('New Schedule Updated!', 'Schedule Detail: ' . $schedule, "Update");
+            $this->logActivity('New Schedule Updated!', 'Activity Detail: ' . $schedule, "Update");
             return response()->json($schedule, 200);
         } catch (Exception $e) {
             return response()->json(['error' => 'Failed to update schedule: ' . $e->getMessage()], 500);
@@ -84,7 +84,7 @@ class ScheduleController extends Controller
     {
         try {
             $schedule->delete();
-            $this->logActivity('New Schedule Deleted!', 'Schedule Detail: ' . $schedule, "Delete");
+            $this->logActivity('New Schedule Deleted!', 'Activity Detail: ' . $schedule, "Delete");
             return response()->json(['message' => 'Schedule deleted'], 200);
         } catch (Exception $e) {
             return response()->json(['error' => 'Failed to delete schedule: ' . $e->getMessage()], 500);

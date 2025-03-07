@@ -41,14 +41,14 @@ class StudyProgramController extends Controller
                 'faculty_id' => 'required|exists:faculties,id',
                 'name' => 'required|string|max:50|unique:study_programs,name'
             ]);
-    
+
             $faculty = Faculty::find($validated['faculty_id']);
             $facultyName = $faculty->name;
-    
+
             $studyProgram = StudyProgram::create($validated);
             $this->logActivity(
                 'New Study Program Created!',
-                'Study Program Name: ' . $studyProgram->name . ', Faculty ID: ' . $validated['faculty_id'] . ', Faculty Name: ' . $facultyName,
+                'Activity Detail: ' . $studyProgram,
                 "Create"
             );
             return response()->json($studyProgram, 201);
@@ -83,14 +83,14 @@ class StudyProgramController extends Controller
                 'name' => 'required|string|max:50|unique:study_programs,name,' . $studyProgram->id
             ]);
 
-                
+
             $faculty = Faculty::find($validated['faculty_id']);
             $facultyName = $faculty->name;
-    
+
             $studyProgram->update($validated);
             $this->logActivity(
                 'New Study Program Updated!',
-                'Study Program Name: ' . $studyProgram->name . ', Faculty ID: ' . $validated['faculty_id'] . ', Faculty Name: ' . $facultyName,
+                'Activity Detail: ' . $studyProgram,
                 "Update"
             );
             return response()->json($studyProgram);
@@ -110,7 +110,9 @@ class StudyProgramController extends Controller
             $studyProgram->delete();
             $this->logActivity(
                 'New Study Program Deleted!',
-                'Study Program Name: ' . $studyProgram->name, "Delete");
+                'Activity Detail: ' . $studyProgram,
+                "Delete"
+            );
             return response()->json(['message' => 'Study program deleted successfully']);
         } catch (\Exception $e) {
             return response()->json(['message' => 'An error occurred while deleting the study program', 'error' => $e->getMessage()], 500);

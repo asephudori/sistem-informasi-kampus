@@ -39,7 +39,7 @@ class StudyProgramLecturerController extends Controller
 
         try {
             $studyProgramLecturer = StudyProgramLecturer::create($request->all());
-            $this->logActivity('Study Program Lecturer Created!', 'Study Program Lecturer Detail: ' . $studyProgramLecturer, "Create");
+            $this->logActivity('Study Program Lecturer Created!', 'Activity Detail: ' . $studyProgramLecturer, "Create");
             return response()->json(['data' => $studyProgramLecturer, 'message' => 'Study Program Lecturer created successfully'], 201);
         } catch (Throwable $e) {
             return response()->json(['message' => 'Failed to create study program lecturer', 'error' => $e->getMessage()], 500);
@@ -74,7 +74,7 @@ class StudyProgramLecturerController extends Controller
 
         try {
             $studyProgramLecturer->update($request->all());
-            $this->logActivity('Study Program Lecturer Updated!', 'Study Program Lecturer Detail: ' . $studyProgramLecturer, "Update");
+            $this->logActivity('Study Program Lecturer Updated!', 'Activity Detail: ' . $studyProgramLecturer, "Update");
             return response()->json(['data' => $studyProgramLecturer, 'message' => 'Study Program Lecturer updated successfully'], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Study Program Lecturer not found'], 404);
@@ -88,7 +88,7 @@ class StudyProgramLecturerController extends Controller
     {
         try {
             $studyProgramLecturer->delete();
-            $this->logActivity('Study Program Lecturer Deleted!', 'Study Program Lecturer Detail: ' . $studyProgramLecturer, "Delete");
+            $this->logActivity('Study Program Lecturer Deleted!', 'Activity Detail: ' . $studyProgramLecturer, "Delete");
             return response()->json(['message' => 'Study Program Lecturer deleted successfully'], 200);
         } catch (Throwable $e) {
             return response()->json(['message' => 'Failed to delete study program lecturer', 'error' => $e->getMessage()], 500);

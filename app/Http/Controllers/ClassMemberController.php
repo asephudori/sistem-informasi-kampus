@@ -58,7 +58,7 @@ class ClassMemberController extends Controller
             }
 
             $classMember = ClassMember::create($request->all());
-            $this->logActivity('New Class Member Created!', 'Class Member Detail: ' . $classMember, "Create");
+            $this->logActivity('New Class Member Created!', 'Activity Detail: ' . $classMember, "Create");
             return response()->json($classMember, 201);
         } catch (Throwable $e) {
             return response()->json(['message' => 'Error creating class member', 'error' => $e->getMessage()], 500);
@@ -95,7 +95,7 @@ class ClassMemberController extends Controller
             }
 
             $classMember->update($request->all());
-            $this->logActivity('New Class Member Updated!', 'Class Member Detail: ' . $classMember, "Update");
+            $this->logActivity('New Class Member Updated!', 'Activity Detail: ' . $classMember, "Update");
             return response()->json($classMember, 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Class member not found'], 404);
@@ -110,7 +110,7 @@ class ClassMemberController extends Controller
         try {
             $classMember = ClassMember::findOrFail($id); // Use findOrFail
             $classMember->delete();
-            $this->logActivity('New Class Member Deleted!', 'Class Member Detail: ' . $classMember, "Delete");
+            $this->logActivity('New Class Member Deleted!', 'Activity Detail: ' . $classMember, "Delete");
             return response()->json(['message' => 'Class member deleted'], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Class member not found'], 404);

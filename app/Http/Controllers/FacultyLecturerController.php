@@ -38,7 +38,7 @@ class FacultyLecturerController extends Controller
 
         try {
             $facultyLecturer = FacultyLecturer::create($request->all());
-            $this->logActivity('New Faculty Lecturer Created!', 'Faculty Lecturer Detail: ' . $facultyLecturer, "Create");
+            $this->logActivity('New Faculty Lecturer Created!', 'Activity Detail: ' . $facultyLecturer, "Create");
             return response()->json(['data' => $facultyLecturer, 'message' => 'Faculty Lecturer created successfully'], 201);
         } catch (Throwable $e) {
             return response()->json(['message' => 'Failed to create faculty lecturer', 'error' => $e->getMessage()], 500);
@@ -73,7 +73,7 @@ class FacultyLecturerController extends Controller
 
         try {
             $facultyLecturer->update($request->all());
-            $this->logActivity('New Faculty Lecturer Updated!', 'Faculty Lecturer Detail: ' . $facultyLecturer, "Update");
+            $this->logActivity('New Faculty Lecturer Updated!', 'Activity Detail: ' . $facultyLecturer, "Update");
             return response()->json(['data' => $facultyLecturer, 'message' => 'Faculty Lecturer updated successfully'], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Faculty Lecturer not found'], 404);
@@ -87,7 +87,7 @@ class FacultyLecturerController extends Controller
     {
         try {
             $facultyLecturer->delete();
-            $this->logActivity('New Faculty Lecturer Deleted!', 'Faculty Lecturer Detail: ' . $facultyLecturer, "Delete");
+            $this->logActivity('New Faculty Lecturer Deleted!', 'Activity Detail: ' . $facultyLecturer, "Delete");
             return response()->json(['message' => 'Faculty Lecturer deleted successfully'], 200);
         } catch (Throwable $e) {
             return response()->json(['message' => 'Failed to delete faculty lecturer', 'error' => $e->getMessage()], 500);
