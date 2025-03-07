@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\UniversityInformation;
+use App\Traits\Loggable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -10,6 +11,7 @@ use Throwable;
 
 class UniversityInformationController extends Controller
 {
+    use Loggable;
     public function index()
     {
         try {
@@ -36,6 +38,11 @@ class UniversityInformationController extends Controller
             }
 
             $universityInformation = UniversityInformation::create($request->all());
+            $this->logActivity(
+                'New University Information Created!',
+                'Activity Detail: ' . $universityInformation,
+                "Create"
+            );
             return response()->json($universityInformation, 201);
         } catch (Throwable $e) {
             return response()->json(['message' => 'Error creating university information', 'error' => $e->getMessage()], 500);
@@ -72,6 +79,11 @@ class UniversityInformationController extends Controller
             }
 
             $universityInformation->update($request->all());
+            $this->logActivity(
+                'New University Information Updated!',
+                'Activity Detail: ' . $universityInformation,
+                "Update"
+            );
             return response()->json($universityInformation, 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'University information not found'], 404);
@@ -85,6 +97,11 @@ class UniversityInformationController extends Controller
         try {
             $universityInformation = UniversityInformation::findOrFail($id);
             $universityInformation->delete();
+            $this->logActivity(
+                'New University Information Deleted!',
+                'Activity Detail: ' . $universityInformation,
+                "Delete"
+            );
             return response()->json(['message' => 'University information deleted'], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'University information not found'], 404);
