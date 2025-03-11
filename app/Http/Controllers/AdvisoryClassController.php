@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\AdvisoryClass;
+use App\Traits\Loggable;
 use App\Http\Resources\AdvisoryClassResource;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AdvisoryClassController extends Controller
 {
+    use Loggable;
     private function validatedData(Request $request, bool $useSometimes = false)
     {
         if (empty($request->all())) {
@@ -61,6 +63,7 @@ class AdvisoryClassController extends Controller
             $validatedData = $this->validatedData($request);
 
             $advisoryClass = AdvisoryClass::create(array_merge($validatedData));
+            $this->logActivity('New Advisory Class Created!', 'Activity Detail: ' . $advisoryClass, "Create");
             return response()->json(['message' => 'Advisory Class created successfully', 'advisory_class' => new AdvisoryClassResource($advisoryClass)], 201);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
@@ -93,6 +96,7 @@ class AdvisoryClassController extends Controller
             $advisoryClass = AdvisoryClass::findOrFail($id);
             $validatedData = $this->validatedData($request, true);
             $advisoryClass->update($validatedData);
+            $this->logActivity('New Advisory Class Updated!', 'Activity Detail: ' . $advisoryClass, "Update");
             return response()->json(['message' => 'Advisory class updated successfully', 'advisory class' => new AdvisoryClassResource($advisoryClass)]);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
@@ -111,6 +115,7 @@ class AdvisoryClassController extends Controller
         try {
             $advisoryClass = AdvisoryClass::findOrFail($id);
             $advisoryClass->delete();
+            $this->logActivity('New Advisory Class Deleted!', 'Activity Detail: ' . $advisoryClass, "Delete");
             return response()->json(['message' => 'Advisory class deleted successfully']);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Advisory class not found'], 404);

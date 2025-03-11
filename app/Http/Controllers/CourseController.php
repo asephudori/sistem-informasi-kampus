@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use Illuminate\Http\Request;
+use App\Traits\Loggable;
 use App\Http\Resources\CourseResource;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class CourseController extends Controller
 {
+    use Loggable;
     private function validatedData(Request $request, bool $useSometimes = false)
     {
         if (empty($request->all())) {
@@ -60,6 +62,7 @@ class CourseController extends Controller
             $validatedData = $this->validatedData($request);
 
             $course = Course::create(array_merge($validatedData));
+            $this->logActivity('New Course Created!', 'Activity Detail: ' . $course, "Create");
             return response()->json(['message' => 'Course created successfully', 'course' => new CourseResource($course)], 201);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
@@ -98,6 +101,7 @@ class CourseController extends Controller
                 }
             }
             $course->update($validatedData);
+            $this->logActivity('New Course Updated!', 'Activity Detail: ' . $course, "Update");
             return response()->json(['message' => 'Course updated successfully', 'course' => new CourseResource($course)]);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
@@ -116,6 +120,7 @@ class CourseController extends Controller
         try {
             $course = Course::findOrFail($id);
             $course->delete();
+            $this->logActivity('New Course Deleted!', 'Activity Detail: ' . $course, "Delete");
             return response()->json(['message' => 'Course deleted successfully']);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Course not found'], 404);
