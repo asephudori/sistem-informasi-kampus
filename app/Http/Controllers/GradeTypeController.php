@@ -63,7 +63,7 @@ class GradeTypeController extends Controller
             $validatedData = $this->validatedData($request);
 
             $gradeType = GradeType::create(array_merge($validatedData));
-            $this->logActivity('New Grade Format Created!', 'Activity Detail: ' . $gradeType, "Create");
+            $this->logActivity('New Grade Type Created!', 'Activity Detail: ' . $gradeType, "Create");
             return response()->json(['message' => 'Grade type created successfully', 'grade_type' => new GradeTypeResource($gradeType)], 201);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
@@ -96,7 +96,7 @@ class GradeTypeController extends Controller
             $gradeType = GradeType::findOrFail($id);
             $validatedData = $this->validatedData($request, true);
             $gradeType->update($validatedData);
-            $this->logActivity('New Grade Format Updated!', 'Activity Detail: ' . $gradeType, "Update");
+            $this->logActivity('New Grade Type Updated!', 'Activity Detail: ' . $gradeType, "Update");
             return response()->json(['message' => 'Grade type updated successfully', 'grade_type' => new GradeTypeResource($gradeType)]);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
@@ -115,7 +115,7 @@ class GradeTypeController extends Controller
         try {
             $gradeType = GradeType::findOrFail($id);
             $gradeType->delete();
-            $this->logActivity('New Grade Format Deleted!', 'Activity Detail: ' . $gradeType, "Delete");
+            $this->logActivity('New Grade Type Deleted!', 'Activity Detail: ' . $gradeType, "Delete");
             return response()->json(['message' => 'Grade type deleted successfully']);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Grade type not found'], 404);
