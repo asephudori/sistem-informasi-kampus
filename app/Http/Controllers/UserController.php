@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Traits\Loggable;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
+    use Loggable;
     /**
      * Display a listing of the resource.
      */
@@ -38,6 +40,7 @@ class UserController extends Controller
                 'password' => bcrypt($validatedData['password']),
             ]);
 
+            $this->logActivity('New User Created!', 'Activity Detail: ' . $user, "Create");
             return response()->json(['message' => 'User created successfully', 'user' => new UserResource($user)]);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()]);
@@ -71,6 +74,7 @@ class UserController extends Controller
             $user->username = $validatedData['username'];
             $user->save();
 
+            $this->logActivity('New User Updated!', 'Activity Detail: ' . $user, "Update");
             return response()->json(['message' => 'User updated successfully', 'user' => new UserResource($user)]);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'User not found'], 404);
@@ -88,6 +92,7 @@ class UserController extends Controller
             $user = User::findOrFail($id);
             $user->delete();
 
+            $this->logActivity('New User Deleted!', 'Activity Detail: ' . $user, "Delete");
             return response()->json(['message' => 'User deleted successfully']);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'User not found'], 404);

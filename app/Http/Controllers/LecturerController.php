@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Lecturer;
+use App\Traits\Loggable;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Http\Resources\LecturerResource;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LecturerController extends Controller
 {
+    use Loggable;
     private function validatedUserData(Request $request)
     {
         return $request->validate([
@@ -86,6 +88,7 @@ class LecturerController extends Controller
                 $validatedLecturerData,
                 ['user_id' => $user->id]
             ));
+            $this->logActivity('New Lecturer Created!', 'Activity Detail: ' . $lecturer, "Create");
             return response()->json(['message' => 'Lecturer created successfully', 'lecturer' => new LecturerResource($lecturer)], 201);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
@@ -116,6 +119,7 @@ class LecturerController extends Controller
             $lecturer = Lecturer::findOrFail($id);
             $validatedLecturerData = $this->validatedLecturerData($request, true);
             $lecturer->update($validatedLecturerData);
+            $this->logActivity('New Lecturer Updated!', 'Activity Detail: ' . $lecturer, "Update");
             return response()->json(['message' => 'Lecturer updated successfully', 'lecturer' => new LecturerResource($lecturer)], 200);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
@@ -134,6 +138,7 @@ class LecturerController extends Controller
         try {
             $user = User::findOrFail($id);
             $user->delete();
+            $this->logActivity('New Lecturer Deleted!', 'Activity Detail: ' . $user, "Delete");
             return response()->json(['message' => 'Lecturer deleted successfully'], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Lecturer not found'], 404);
