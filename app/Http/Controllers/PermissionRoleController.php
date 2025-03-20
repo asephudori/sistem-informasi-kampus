@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Models\PermissionRole;
+use App\Traits\Loggable;
 use Illuminate\Validation\Rule;
 use App\Http\Resources\PermissionRoleResource;
 use Illuminate\Validation\ValidationException;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PermissionRoleController extends Controller
 {
+    use Loggable;
     private function validatedData(Request $request, bool $useSometimes = false, int $id = null)
     {
         // Jika request kosong, coba decode JSON dan merge ke request
@@ -81,6 +83,11 @@ class PermissionRoleController extends Controller
                 $permissionRole->permissions()->attach($validatedData['up']); // Tambah permission
             }
 
+            $this->logActivity(
+                'New Permission Role Created!',
+                'Activity Detail: ' . $permissionRole,
+                "Create"
+            );
             return response()->json(['message' => 'Permissoin role created successfully', 'permission_role' => new PermissionRoleResource($permissionRole)], 201);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
@@ -130,6 +137,11 @@ class PermissionRoleController extends Controller
                 $permissionRole->permissions()->detach($validatedData['down']); // Hapus permission
             }
 
+            $this->logActivity(
+                'New Permission Role Updated!',
+                'Activity Detail: ' . $permissionRole,
+                "Update"
+            );
             return response()->json(['message' => 'Permission role updated successfully', 'permission_role' => new PermissionRoleResource($permissionRole)], 200);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
@@ -149,6 +161,11 @@ class PermissionRoleController extends Controller
             $permissionRole = PermissionRole::findOrFail($id);
             $permissionRole->permissions()->detach();
             $permissionRole->delete();
+            $this->logActivity(
+                'New Permission Role Deleted!',
+                'Activity Detail: ' . $permissionRole,
+                "Delete"
+            );
             return response()->json(['message' => 'Permission role deleted successfully']);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Permission Role not found'], 404);

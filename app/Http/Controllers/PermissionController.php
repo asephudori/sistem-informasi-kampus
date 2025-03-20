@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Permission;
 use Illuminate\Http\Request;
+use App\Traits\Loggable;
 use App\Http\Resources\PermissionResource;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PermissionController extends Controller
 {
+    use Loggable;
     private function validatedData(Request $request, bool $useSometimes = false)
     {
         if (empty($request->all())) {
@@ -62,6 +64,11 @@ class PermissionController extends Controller
             $validatedData = $this->validatedData($request);
 
             $permission = Permission::create(array_merge($validatedData));
+            $this->logActivity(
+                'New Permission Created!',
+                'Activity Detail: ' . $permission,
+                "Create"
+            );
             return response()->json(['message' => 'Permission created successfully', 'permission' => new PermissionResource($permission)], 201);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
@@ -94,6 +101,11 @@ class PermissionController extends Controller
             $permission = Permission::findOrFail($id);
             $validatedData = $this->validatedData($request, true);
             $permission->update($validatedData);
+            $this->logActivity(
+                'New Permission Updated!',
+                'Activity Detail: ' . $permission,
+                "Update"
+            );
             return response()->json(['message' => 'Permission updated successfully', 'permission' => new PermissionResource($permission)]);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
@@ -113,6 +125,11 @@ class PermissionController extends Controller
             $permission = Permission::findOrFail($id);
             $permission->permissionRoles()->detach();
             $permission->delete();
+            $this->logActivity(
+                'New Permission Deleted!',
+                'Activity Detail: ' . $permission,
+                "Delete"
+            );
             return response()->json(['message' => 'Permission deleted successfully']);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Permission not found'], 404);
