@@ -35,7 +35,7 @@ class LearningClassController extends Controller
             'lecturer_id' => ($useSometimes ? 'sometimes|' : 'required|') . 'exists:lecturers,user_id',
             'course_id' => ($useSometimes ? 'sometimes|' : 'required|') . 'exists:courses,id',
             'semester_id' => ($useSometimes ? 'sometimes|' : 'required|') . 'exists:semesters,id',
-            'classroom_id' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'exists:classroomss,id',
+            'classroom_id' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'exists:classrooms,id',
         ];
 
         return $request->validate($rules);
@@ -112,7 +112,7 @@ class LearningClassController extends Controller
     {
         try {
             $learningClass = LearningClass::findOrFail($id);
-            
+
             $learningClass->delete();
             return response()->json(['message' => 'Learning class deleted successfully']);
         } catch (ModelNotFoundException $e) {

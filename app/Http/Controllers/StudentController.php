@@ -52,7 +52,7 @@ class StudentController extends Controller
             'current_address' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'max:255',
             'home_city_district' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'max:255',
             'home_postal_code' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'max:255',
-            'gender' => ($useSometimes ? 'sometimes|' : 'required|') . 'in:male, female',
+            'gender' => ($useSometimes ? 'sometimes|' : 'required|') . 'in:male,female',
         ];
 
         return $request->validate($rules);

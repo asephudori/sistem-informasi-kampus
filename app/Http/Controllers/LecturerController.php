@@ -50,7 +50,7 @@ class LecturerController extends Controller
             'entry_date' => ($useSometimes ? 'sometimes|' : 'required|') . 'date',
             'birthplace' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'max:255',
             'birthdate' => ($useSometimes ? 'sometimes|' : 'nullable|') . 'date',
-            'gender' => ($useSometimes ? 'sometimes|' : 'required|') . 'in:male, female',
+            'gender' => ($useSometimes ? 'sometimes|' : 'required|') . 'in:male,female',
         ];
 
         return $request->validate($rules);

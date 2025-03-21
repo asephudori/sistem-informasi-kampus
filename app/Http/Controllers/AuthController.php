@@ -30,12 +30,14 @@ class AuthController extends Controller
         $relatedModel = match ($user->role()) {
             'student' => $user->student,
             'lecturer' => $user->lecturer,
-            'admin' => $user->lecturer,
+            'admin' => $user->admin,
             default => null,
         };
 
         $name = $relatedModel?->name ?? null;
         $email = in_array($user->role(), ['student', 'lecturer']) ? $relatedModel?->email ?? null : null;
+        $admin_role = $user->role() === 'admin' ? $relatedModel->role : null;
+        $admin_permission_role = $user->role() === 'admin' ? $relatedModel->permissionRole : null;
 
         return response()->json([
             'access_token' => $token,
@@ -45,6 +47,10 @@ class AuthController extends Controller
                 'role' => $user->role(),
                 'name' => $name,
                 'email' => $email,
+                ...( $user->role() === 'admin' ? [
+                    'admin_role' => $admin_role,
+                    'admin_permission_role' => $admin_permission_role,
+                ] : [] )
             ]
         ]);
     }

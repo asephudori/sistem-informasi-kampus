@@ -22,7 +22,7 @@ class GradeResource extends JsonResource
                 'nim' => optional($this->student)->student->nim,
                 'name' => optional($this->student)->student->name,
             ],
-            'class' => new LearningClassResource($this->class),
+            'class' => new LearningClassResource($this->learningClass),
             'grade_type' => new GradeTypeResource($this->gradeType),
             'grade' => $this->grade
         ];

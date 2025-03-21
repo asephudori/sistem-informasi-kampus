@@ -18,6 +18,11 @@ class ClassMemberController extends Controller
         try {
             $query = ClassMember::with(['class', 'user']);
 
+            if ($request->has('student_id')) {
+                $student_id = $request->query('student_id');
+                $query->where('student_id', $student_id);
+            }
+
             // Search functionality (combining all search criteria)
             if ($request->has('search')) {
                 $search = $request->input('search');

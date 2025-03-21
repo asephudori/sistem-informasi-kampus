@@ -44,10 +44,16 @@ class GradeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $grades = Grade::orderBy('id', 'desc')->paginate(12);
+            if ($request->query('student_id')) {
+                $grades = Grade::where('student_id', $request->query('student_id'))
+                               ->orderBy('id', 'desc')
+                               ->paginate(12);
+            } else {
+                $grades = Grade::orderBy('id', 'desc')->paginate(12);
+            }
             return GradeResource::collection($grades);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Failed to retrieve grades', 'errors' => $e->getMessage()], 500);
