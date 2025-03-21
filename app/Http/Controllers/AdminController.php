@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Admin;
+use App\Traits\Loggable;
 use Illuminate\Http\Request;
 use App\Http\Resources\AdminResource;
 use Illuminate\Validation\ValidationException;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AdminController extends Controller
 {
+    use Loggable;
     private function validatedUserData(Request $request)
     {
         return $request->validate([
@@ -79,6 +81,7 @@ class AdminController extends Controller
                 $validatedStudentData,
                 ['user_id' => $user->id]
             ));
+            $this->logActivity('New Admin Created!', 'Activity Detail: ' . $admin, "Create");
             return response()->json(['message' => 'Admin created successfully', 'admin' => new AdminResource($admin)], 201);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
@@ -111,6 +114,7 @@ class AdminController extends Controller
             $admin = Admin::findOrFail($id);
             $validatedAdminData = $this->validatedAdminData($request, true);
             $admin->update($validatedAdminData);
+            $this->logActivity('New Admin Updated!', 'Activity Detail: ' . $admin, "Update");
             return response()->json(['message' => 'Admin updated successfully', 'admin' => new AdminResource($admin)]);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
@@ -129,6 +133,7 @@ class AdminController extends Controller
         try {
             $user = User::findOrFail($id);
             $user->delete();
+            $this->logActivity('New Admin Deleted!', 'Activity Detail: ' . $user, "Delete");
             return response()->json(['message' => 'Admin deleted successfully']);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Admin not found'], 404);

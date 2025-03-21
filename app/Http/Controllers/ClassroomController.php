@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Classroom;
+use App\Traits\Loggable;
 use Illuminate\Http\Request;
 use App\Http\Resources\ClassroomResource;
 use Illuminate\Validation\ValidationException;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ClassroomController extends Controller
 {
+    use Loggable;
     private function validatedData(Request $request, bool $useSometimes = false)
     {
         if (empty($request->all())) {
@@ -59,6 +61,7 @@ class ClassroomController extends Controller
             $validatedData = $this->validatedData($request);
 
             $classroom = Classroom::create(array_merge($validatedData));
+            $this->logActivity('New Classroom Created!', 'Activity Detail: ' . $classroom, "Create");
             return response()->json(['message' => 'Course created successfully', 'classroom' => new ClassroomResource($classroom)], 201);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
@@ -97,6 +100,7 @@ class ClassroomController extends Controller
                 }
             }
             $classroom->update($validatedData);
+            $this->logActivity('New Classroom Updated!', 'Activity Detail: ' . $classroom, "Update");
             return response()->json(['message' => 'Classroom updated successfully', 'classroom' => new ClassroomResource($classroom)]);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
@@ -115,6 +119,7 @@ class ClassroomController extends Controller
         try {
             $classroom = Classroom::findOrFail($id);
             $classroom->delete();
+            $this->logActivity('New Classroom Deleted!', 'Activity Detail: ' . $classroom, "Delete");
             return response()->json(['message' => 'Classroom deleted successfully']);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Classroom not found'], 404);

@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\TransactionCategory;
+use App\Traits\Loggable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\QueryException;
 
 class TransactionCategoryController extends Controller
 {
+    use Loggable;
     /**
      * Display a listing of the resource.
      */
@@ -39,6 +41,11 @@ class TransactionCategoryController extends Controller
 
         try {
             $transactionCategory = TransactionCategory::create($request->all());
+            $this->logActivity(
+                'New Transaction Category Created!',
+                'Activity Detail: ' . $transactionCategory,
+                "Create"
+            );
             return response()->json(['data' => $transactionCategory, 'message' => 'Transaction category created successfully.'], 201);
         } catch (QueryException $e) {
             // Handle database-specific errors (e.g., unique constraint violations)
@@ -78,6 +85,11 @@ class TransactionCategoryController extends Controller
 
         try {
             $transactionCategory->update($request->all());
+            $this->logActivity(
+                'New Transaction Category Updated!',
+                'Activity Detail: ' . $transactionCategory,
+                "Update"
+            );
             return response()->json(['data' => $transactionCategory, 'message' => 'Transaction category updated successfully.'], 200);
         } catch (QueryException $e) {
             return response()->json(['message' => 'Failed to update transaction category. Database error.', 'error' => $e->getMessage()], 500);
@@ -102,6 +114,11 @@ class TransactionCategoryController extends Controller
     
         try {
             $transactionCategory->delete(); // Soft delete
+            $this->logActivity(
+                'New Transaction Category Deleted!',
+                'Activity Detail: ' . $transactionCategory,
+                "Delete"
+            );
             return response()->json(['message' => 'Transaction category deleted successfully.'], 200);
         } catch (\Exception $e) {
             return response()->json([

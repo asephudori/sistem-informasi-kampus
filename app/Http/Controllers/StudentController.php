@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Student;
+use App\Traits\Loggable;
 use Illuminate\Http\Request;
 use App\Http\Resources\StudentResource;
 use Illuminate\Validation\ValidationException;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class StudentController extends Controller
 {
+    use Loggable;
     private function validatedUserData(Request $request)
     {
         return $request->validate([
@@ -91,6 +93,7 @@ class StudentController extends Controller
                     'nim' => $user->id,
                 ]
             ));
+            $this->logActivity('New Student Created!', 'Activity Detail: ' . $student, "Create");
             return response()->json(['message' => 'Student created successfully', 'student' => new StudentResource($student)], 201);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
@@ -123,6 +126,7 @@ class StudentController extends Controller
             $student = Student::findOrFail($id);
             $validatedStudentData = $this->validatedStudentData($request, true);
             $student->update($validatedStudentData);
+            $this->logActivity('New Student Updated!', 'Activity Detail: ' . $student, "Update");
             return response()->json(['message' => 'Student updated successfully', 'student' => new StudentResource($student)]);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
@@ -141,6 +145,7 @@ class StudentController extends Controller
         try {
             $user = User::findOrFail($id);
             $user->delete();
+            $this->logActivity('New Student Deleited!', 'Activity Detail: ' . $user, "Delete");
             return response()->json(['message' => 'Student deleted successfully']);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Student not found'], 404);

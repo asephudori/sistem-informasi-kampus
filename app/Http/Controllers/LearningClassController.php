@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\LearningClass;
+use App\Traits\Loggable;
 use App\Http\Resources\LearningClassResource;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LearningClassController extends Controller
 {
+    use Loggable;
     private function validatedData(Request $request, bool $useSometimes = false)
     {
         if (empty($request->all())) {
@@ -63,6 +65,7 @@ class LearningClassController extends Controller
             $validatedData = $this->validatedData($request);
 
             $learningClass = LearningClass::create(array_merge($validatedData));
+            $this->logActivity('New Learning Class Created!', 'Activity Detail: ' . $learningClass, "Create");
             return response()->json(['message' => 'Learning class created successfully', 'learning_class' => new LearningClassResource($learningClass)], 201);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
@@ -95,6 +98,7 @@ class LearningClassController extends Controller
             $learningClass = LearningClass::findOrFail($id);
             $validatedData = $this->validatedData($request, true);
             $learningClass->update($validatedData);
+            $this->logActivity('New Learning Class Updated!', 'Activity Detail: ' . $learningClass, "Update");
             return response()->json(['message' => 'Learning class updated successfully', 'learning_class' => new LearningClassResource($learningClass)]);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
@@ -114,6 +118,7 @@ class LearningClassController extends Controller
             $learningClass = LearningClass::findOrFail($id);
 
             $learningClass->delete();
+            $this->logActivity('New Learning Class Deleted!', 'Activity Detail: ' . $learningClass, "Delete");
             return response()->json(['message' => 'Learning class deleted successfully']);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Learning class not found'], 404);

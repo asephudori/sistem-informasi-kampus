@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Grade;
 use Illuminate\Http\Request;
+use App\Traits\Loggable;
 use App\Http\Resources\GradeResource;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class GradeController extends Controller
 {
+    use Loggable;
     private function validatedData(Request $request, bool $useSometimes = false)
     {
         if (empty($request->all())) {
@@ -69,6 +71,7 @@ class GradeController extends Controller
             $validatedData = $this->validatedData($request);
 
             $grade = Grade::create(array_merge($validatedData));
+            $this->logActivity('New Grade Created!', 'Activity Detail: ' . $grade, "Create");
             return response()->json(['message' => 'Grade created successfully', 'grade' => new GradeResource($grade)], 201);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
@@ -101,6 +104,7 @@ class GradeController extends Controller
             $grade = Grade::findOrFail($id);
             $validatedData = $this->validatedData($request, true);
             $grade->update($validatedData);
+            $this->logActivity('New Grade Updated!', 'Activity Detail: ' . $grade, "Update");
             return response()->json(['message' => 'Grade updated successfully', 'grade' => new GradeResource($grade)]);
         } catch (ValidationException $e) {
             return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
@@ -119,6 +123,7 @@ class GradeController extends Controller
         try {
             $grade = Grade::findOrFail($id);
             $grade->delete();
+            $this->logActivity('New Grade Deleted!', 'Activity Detail: ' . $grade, "Delete");
             return response()->json(['message' => 'Grade deleted successfully']);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Grade not found'], 404);

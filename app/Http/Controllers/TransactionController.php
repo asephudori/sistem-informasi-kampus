@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Transaction;
 use App\Models\TransactionCategory;
+use App\Traits\Loggable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
 class TransactionController extends Controller
 {
+    use Loggable;
     public function store(Request $request)
     {
         // Validation
@@ -42,6 +44,11 @@ class TransactionController extends Controller
 
             DB::commit();
 
+            $this->logActivity(
+                'New Transaction Created!',
+                'Activity Detail: ' . $transaction,
+                "Create"
+            );
             return response()->json(['message' => 'Transaction created successfully', 'data' => $transaction], 201);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -127,6 +134,11 @@ class TransactionController extends Controller
             $transaction->fill($request->all());
             $transaction->save();
             DB::commit();
+            $this->logActivity(
+                'New Transaction Updated!',
+                'Activity Detail: ' . $transaction,
+                "Update"
+            );
             return response()->json(['message' => 'Transaction updated successfully', 'data' => $transaction], 200);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -147,6 +159,11 @@ class TransactionController extends Controller
         try {
             $transaction->delete();
             DB::commit();
+            $this->logActivity(
+                'New Transaction Deleted!',
+                'Activity Detail: ' . $transaction,
+                "Delete"
+            );
             return response()->json(['message' => 'Transaction deleted successfully'], 200);
         } catch (\Exception $e) {
             DB::rollBack();

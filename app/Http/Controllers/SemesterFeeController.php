@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SemesterFee;
+use App\Traits\Loggable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -11,6 +12,7 @@ use Throwable;
 
 class SemesterFeeController extends Controller
 {
+    use Loggable;
     /**
      * Display a listing of the resource.
      */
@@ -51,6 +53,7 @@ class SemesterFeeController extends Controller
 
         try {
             $semesterFee = SemesterFee::create($request->all());
+            $this->logActivity('New Semester Fee Created!', 'Activity Detail: ' . $semesterFee, "Create");
             return response()->json($semesterFee, 201);
         } catch (Throwable $e) {
             return response()->json(['message' => 'Error creating semester fee', 'error' => $e->getMessage()], 500);
@@ -92,6 +95,7 @@ class SemesterFeeController extends Controller
         try {
             $semesterFee = SemesterFee::findOrFail($id);
             $semesterFee->update($request->all());
+            $this->logActivity('New Semester Fee Updated!', 'Activity Detail: ' . $semesterFee, "Update");
             return response()->json($semesterFee, 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Semester fee not found'], 404);
@@ -108,6 +112,7 @@ class SemesterFeeController extends Controller
         try {
             $semesterFee = SemesterFee::findOrFail($id);
             $semesterFee->delete();
+            $this->logActivity('New Semester Fee Deleted!', 'Activity Detail: ' . $semesterFee, "Delete");
             return response()->json(['message' => 'Semester fee deleted'], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Semester fee not found'], 404);

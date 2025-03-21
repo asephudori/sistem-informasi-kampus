@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Semester;
 use App\Models\LearningClass;
+use App\Traits\Loggable;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Database\QueryException;
 
 class SemesterController extends Controller
 {
+    use Loggable;
     // Get all semesters
     public function index(): JsonResponse
     {
@@ -37,6 +39,7 @@ class SemesterController extends Controller
             ]);
 
             $semester = Semester::create($validated);
+            $this->logActivity('New Semester Created!', 'Activity Detail: ' . $semester, "Create");
             return response()->json($semester, 201);
         } catch (\Exception $e) {
             return response()->json(['message' => 'An error occurred while creating the semester', 'error' => $e->getMessage()], 500);
@@ -73,6 +76,7 @@ class SemesterController extends Controller
             ]);
 
             $semester->update($validated);
+            $this->logActivity('New Semester Updated!', 'Activity Detail: ' . $semester, "Update");
             return response()->json($semester);
         } catch (\Exception $e) {
             return response()->json(['message' => 'An error occurred while updating the semester', 'error' => $e->getMessage()], 500);
@@ -90,6 +94,7 @@ class SemesterController extends Controller
 
             $semester->delete();
 
+            $this->logActivity('New Semester Deleted!', 'Activity Detail: ' . $semester, "Delete");
             return response()->json(['message' => 'Semester deleted successfully'], 200);
 
         } catch (QueryException $e) {

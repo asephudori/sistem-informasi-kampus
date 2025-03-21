@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Student;
 use App\Models\SemesterFee;
 use App\Models\Admin;
+use App\Traits\Loggable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Mail;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Storage;
 
 class PaymentReminderController extends Controller
 {
+    use Loggable;
     public function sendReminder(Request $request)
     {
         try {
@@ -61,6 +63,11 @@ class PaymentReminderController extends Controller
                 }
             }
 
+            $this->logActivity(
+                'New Send Reminder Created!',
+                'Activity Detail: ' . $sentReminders,
+                "Create"
+            );
             return response()->json([
                 'message' => 'Reminders sent successfully (due date based)',
                 'sent_reminders' => $sentReminders,
@@ -114,6 +121,11 @@ class PaymentReminderController extends Controller
                 }
             }
 
+            $this->logActivity(
+                'New Send Reminder Created!',
+                'Activity Detail: ' . $sentReminders,
+                "Create"
+            );
             return response()->json([
                 'message' => 'Reminders sent manually',
                 'sent_reminders' => $sentReminders,
@@ -146,6 +158,11 @@ class PaymentReminderController extends Controller
             $semesterFee->payment_status = 'awaiting_verification';
             $semesterFee->save();
 
+            $this->logActivity(
+                'New Send Reminder Created!',
+                'Activity Detail: ' . $semesterFee,
+                "Create"
+            );
             return response()->json(['message' => 'Payment proof uploaded successfully', 'payment_proof_path' => $path], 200);
         } catch (\Exception $e) {
             Log::error('Error uploading payment proof: ' . $e->getMessage());
@@ -231,6 +248,12 @@ class PaymentReminderController extends Controller
                 return response()->json($response, 500);
             }
 
+            $this->logActivity(
+                'New Send Success Notification Created!',
+                'Activity Detail: ' . $sentNotifications,
+                "Create"
+            );
+
             return response()->json($response, 200);
         } catch (\Exception $e) {
             Log::error('Error processing success notifications: ' . $e->getMessage());
@@ -285,6 +308,11 @@ class PaymentReminderController extends Controller
             // Update semua data siswa dalam satu query
             SemesterFee::query()->update(['due_date' => $dueDate]);
 
+            $this->logActivity(
+                'New Due Date Created!',
+                'Activity Detail: ' . $dueDate,
+                "Create"
+            );
             return response()->json(['message' => 'Due dates set for all students successfully'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Failed to set due dates. ' . $e->getMessage()], 500);
@@ -308,6 +336,11 @@ class PaymentReminderController extends Controller
             // Update semua data siswa dalam satu query
             SemesterFee::query()->update(['due_date' => $newDueDate]);
 
+            $this->logActivity(
+                'New Due Date Updated!',
+                'Activity Detail: ' . $newDueDate,
+                "Update"
+            );
             return response()->json(['message' => 'Due dates updated for all students successfully'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'Failed to update due dates. ' . $e->getMessage()], 500);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\News;
+use App\Traits\Loggable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -11,35 +12,35 @@ use Throwable;
 
 class NewsController extends Controller
 {
+    use Loggable;
     public function index(Request $request)
     {
         try {
             $query = News::with('admin');
-    
+
             if ($request->has('search')) {
                 $search = $request->input('search');
                 $query->where(function ($q) use ($search) {
                     $q->where('title', 'like', "%$search%")
-                      ->orWhere('description', 'like', "%$search%");
+                        ->orWhere('description', 'like', "%$search%");
                 });
             }
-    
+
             // Filter by date range
             if ($request->has('start_date') && $request->has('end_date')) {
                 $startDate = $request->input('start_date');
                 $endDate = $request->input('end_date');
-    
+
                 // Validate date format (important!)
                 $isValidStartDate = \DateTime::createFromFormat('Y-m-d', $startDate) !== false;
                 $isValidEndDate = \DateTime::createFromFormat('Y-m-d', $endDate) !== false;
-    
+
                 if (!$isValidStartDate || !$isValidEndDate) {
                     return response()->json(['status' => 'error', 'message' => 'Invalid date format. Use YYYY-MM-DD.'], 400); // Bad Request
                 }
-    
-    
+
+
                 $query->whereBetween('date', [$startDate, $endDate]);
-    
             } elseif ($request->has('start_date') && !$request->has('end_date')) {
                 $startDate = $request->input('start_date');
                 $isValidStartDate = \DateTime::createFromFormat('Y-m-d', $startDate) !== false;
@@ -55,9 +56,9 @@ class NewsController extends Controller
                 }
                 $query->where('date', '<=', $endDate);
             }
-    
+
             $news = $query->orderBy('date', 'desc')->paginate(10);
-    
+
             return response()->json(['status' => 'success', 'data' => $news]);
         } catch (\Exception $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
@@ -80,6 +81,11 @@ class NewsController extends Controller
             }
 
             $news = News::create($request->all());
+            $this->logActivity(
+                'New News Created!',
+                'Activity Detail: ' . $news,
+                "Create"
+            );
             return response()->json($news, 201);
         } catch (Throwable $e) {
             return response()->json(['message' => 'Error creating news', 'error' => $e->getMessage()], 500);
@@ -116,6 +122,11 @@ class NewsController extends Controller
             }
 
             $news->update($request->all());
+            $this->logActivity(
+                'New News Updated!',
+                'Activity Detail: ' . $news,
+                "Update"
+            );
             return response()->json($news, 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'News not found'], 404);
@@ -129,6 +140,11 @@ class NewsController extends Controller
         try {
             $news = News::findOrFail($id);
             $news->delete();
+            $this->logActivity(
+                'New News Deleted!',
+                'Activity Detail: ' . $news,
+                "Delete"
+            );
             return response()->json(['message' => 'News deleted'], 200);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'News not found'], 404);

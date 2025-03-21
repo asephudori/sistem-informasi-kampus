@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\GradeFormat;
 use Illuminate\Http\Request;
+use App\Traits\Loggable;
 use App\Http\Resources\GradeFormatResource;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class GradeFormatController extends Controller
 {
+    use Loggable;
     private function validatedData(Request $request, bool $useSometimes = false)
     {
         if (empty($request->all())) {
@@ -61,6 +63,7 @@ class GradeFormatController extends Controller
         //     $validatedData = $this->validatedData($request);
 
         //     $gradeFormat = GradeFormat::create(array_merge($validatedData));
+            // $this->logActivity('New Grade Format Created!', 'Activity Detail: ' . $gradeFormat, "Create");
         //     return response()->json(['message' => 'Grade format created successfully', 'grade_format' => new GradeFormatResource($gradeFormat)], 201);
         // } catch (ValidationException $e) {
         //     return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
@@ -90,19 +93,19 @@ class GradeFormatController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // try {
-        //     $gradeFormat = GradeFormat::findOrFail($id);
-        //     $validatedData = $this->validatedData($request, true);
-        //     $gradeFormat->update($validatedData);
-        //     return response()->json(['message' => 'Grade format updated successfully', 'grade_format' => new GradeFormatResource($gradeFormat)]);
-        // } catch (ValidationException $e) {
-        //     return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
-        // } catch (ModelNotFoundException $e) {
-        //     return response()->json(['message' => 'Grade format not found'], 404);
-        // } catch (\Exception $e) {
-        //     return response()->json(['message' => 'Failed to update grade format', 'errors' => $e->getMessage()], 500);
-        // }
-        return response()->json(['message' => 'success'], 200);
+        try {
+            $gradeFormat = GradeFormat::findOrFail($id);
+            $validatedData = $this->validatedData($request, true);
+            $gradeFormat->update($validatedData);
+            $this->logActivity('New Grade Format Updated!', 'Activity Detail: ' . $gradeFormat, "Update");
+            return response()->json(['message' => 'Grade format updated successfully', 'grade_format' => new GradeFormatResource($gradeFormat)]);
+        } catch (ValidationException $e) {
+            return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Grade format not found'], 404);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to update grade format', 'errors' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -113,6 +116,7 @@ class GradeFormatController extends Controller
         try {
             $gradeFormat = GradeFormat::findOrFail($id);
             $gradeFormat->delete();
+            $this->logActivity('New Grade Format Deleted!', 'Activity Detail: ' . $gradeFormat, "Delete");
             return response()->json(['message' => 'Grade format deleted successfully']);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Grade format not found'], 404);

@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Faculty;
+use App\Traits\Loggable;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 class FacultyController extends Controller
 {
+    use Loggable;
     // Get all faculties
     public function index(): JsonResponse
     {
@@ -33,6 +35,7 @@ class FacultyController extends Controller
             ]);
 
             $faculty = Faculty::create($validated);
+            $this->logActivity('New Faculty Created!', 'Activity Detail: ' . $faculty, "Create");
             return response()->json($faculty, 201);
         } catch (\Exception $e) {
             return response()->json(['message' => 'An error occurred while creating the faculty', 'error' => $e->getMessage()], 500);
@@ -70,6 +73,7 @@ class FacultyController extends Controller
             ]);
 
             $faculty->update($validated);
+            $this->logActivity('New Faculty Updated!', 'Activity Detail: ' . $faculty, "Update");
             return response()->json($faculty);
         } catch (\Exception $e) {
             return response()->json(['message' => 'An error occurred while updating the faculty', 'error' => $e->getMessage()], 500);
@@ -87,6 +91,7 @@ class FacultyController extends Controller
             }
 
             $faculty->delete();
+            $this->logActivity('New Faculty Deleted!', 'Activity Detail: ' . $faculty, "Delete");
             return response()->json(['message' => 'Faculty deleted successfully'], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => 'An error occurred while deleting the faculty', 'error' => $e->getMessage()], 500);
