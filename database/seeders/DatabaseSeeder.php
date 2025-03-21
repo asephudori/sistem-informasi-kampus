@@ -20,16 +20,7 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
 
-        $this->call(NonForeignKeySeeder::class);
-        // $this->call(PermissionSeeder::class);  // Untuk initial data, bukan dummy
-        $this->call(PermissionRoleSeeder::class);
-        $this->call(LecturerSeeder::class);
-        $this->call(AdminSeeder::class);  // Untuk initial data, bukan dummy
-        $this->call(StudyProgramSeeder::class);
-        $this->call(ForeignKeyToNonForeignKeySeeder::class);
-        $this->call(StudentSeeder::class);
-        $this->call(ForeignKeyToForeignKeySeeder::class);
-        $this->call(ForeignKeyOnlySeeder::class);
-        $this->call(PermissionGroupSeeder::class);  // Untuk initial data, bukan dummy
+        $this->call(InitialDataSeeder::class);
+        $this->call(DummyDataSeeder::class);  // Comment atau hapus beserta flienya ketika tidak digunakan
     }
 }

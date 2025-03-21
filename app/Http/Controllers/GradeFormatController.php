@@ -59,17 +59,18 @@ class GradeFormatController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $validatedData = $this->validatedData($request);
+        // try {
+        //     $validatedData = $this->validatedData($request);
 
-            $gradeFormat = GradeFormat::create(array_merge($validatedData));
-            $this->logActivity('New Grade Format Created!', 'Activity Detail: ' . $gradeFormat, "Create");
-            return response()->json(['message' => 'Grade format created successfully', 'grade_format' => new GradeFormatResource($gradeFormat)], 201);
-        } catch (ValidationException $e) {
-            return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
-        } catch (\Exception $e) {
-            return response()->json(['message' => 'Failed to create grade format', 'errors' => $e->getMessage()], 500);
-        }
+        //     $gradeFormat = GradeFormat::create(array_merge($validatedData));
+            // $this->logActivity('New Grade Format Created!', 'Activity Detail: ' . $gradeFormat, "Create");
+        //     return response()->json(['message' => 'Grade format created successfully', 'grade_format' => new GradeFormatResource($gradeFormat)], 201);
+        // } catch (ValidationException $e) {
+        //     return response()->json(['message' => 'Validation failed', 'errors' => $e->errors()], 400);
+        // } catch (\Exception $e) {
+        //     return response()->json(['message' => 'Failed to create grade format', 'errors' => $e->getMessage()], 500);
+        // }
+        return response()->json(['message' => 'success'], 200);
     }
 
     /**

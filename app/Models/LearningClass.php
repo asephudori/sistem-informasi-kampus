@@ -57,4 +57,9 @@ class LearningClass extends Model
     {
         return $this->hasMany(Grade::class);
     }
+
+    public function gradeFormats()
+    {
+        return $this->belongsToMany(GradeFormat::class, 'grade_format_group', 'class_id', 'grade_format_id');
+    }
 }

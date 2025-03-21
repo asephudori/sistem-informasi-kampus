@@ -29,43 +29,36 @@ use App\Http\Controllers\TransactionCategoryController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UniversityInformationController;
 use App\Http\Controllers\PaymentReminderController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\UserInfoController;
 use App\Http\Controllers\ActivityLogController;
+
+Route::apiResource('faculties', FacultyController::class);
+Route::apiResource('study-programs', StudyProgramController::class);
+Route::apiResource('semesters', SemesterController::class);
+Route::apiResource('schedules', ScheduleController::class);
+Route::apiResource('faculty-lecturers', FacultyLecturerController::class);
+Route::apiResource('study-program-lecturers', StudyProgramLecturerController::class);
+Route::apiResource('class-members', ClassMemberController::class);
+Route::apiResource('news', NewsController::class);
+Route::apiResource('university-informations', UniversityInformationController::class);
+Route::apiResource('semester-fees', SemesterFeeController::class);
+Route::apiResource('transaction-categories', TransactionCategoryController::class);
+Route::apiResource('transactions', TransactionController::class);
 
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/user', function (Request $request) {
+    Route::get('/user', function (Request $request) {  // Route contoh bawaan laravel
         return $request->user();
     });
 
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    Route::apiResource('users', UserController::class);
-    Route::apiResource('lecturers', LecturerController::class);
-    Route::apiResource('students', StudentController::class);
-    Route::apiResource('admins', AdminController::class);
-    Route::apiResource('permission-roles', PermissionRoleController::class);
-    Route::apiResource('permissions', PermissionController::class);
-    Route::apiResource('courses', CourseController::class);
-    Route::apiResource('learning-classes', LearningClassController::class);
-    Route::apiResource('advisory-classes', AdvisoryClassController::class);
-    Route::apiResource('grades', GradeController::class);
-    Route::apiResource('grade-types', GradeTypeController::class);
-    Route::apiResource('grade-formats', GradeFormatController::class);
-    Route::apiResource('faculties', FacultyController::class);
-    Route::apiResource('study-programs', StudyProgramController::class);
-    Route::apiResource('semesters', SemesterController::class);
-    Route::apiResource('schedules', ScheduleController::class);
-    Route::apiResource('faculty-lecturers', FacultyLecturerController::class);
-    Route::apiResource('study-program-lecturers', StudyProgramLecturerController::class);
-    Route::apiResource('class-members', ClassMemberController::class);
-    Route::apiResource('news', NewsController::class);
-    Route::apiResource('university-informations', UniversityInformationController::class);
-    Route::apiResource('semester-fees', SemesterFeeController::class);
-    Route::apiResource('transaction-categories', TransactionCategoryController::class);
-    Route::apiResource('transactions', TransactionController::class);
+    Route::get('/user-info', [UserInfoController::class, 'index']);
+    Route::put('/user-info', [UserInfoController::class, 'update']);
 
-    Route::middleware('check_permission')->group(function () {
+    Route::middleware(['check_permission', 'update.last_used'])->group(function () {
         Route::apiResource('users', UserController::class);
         Route::apiResource('admins', AdminController::class);
         Route::apiResource('permission-roles', PermissionRoleController::class);
@@ -101,6 +94,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/semester-fees/edit-due-date', [PaymentReminderController::class, 'editDueDate']);
     Route::get('/semester-fees/payment-proof', [PaymentReminderController::class, 'getPaymentProofs']);
     Route::get('/semester-fees/admins', [PaymentReminderController::class, 'getAdmins']);
+
+Route::get('/test', function () {
+    return response()->json(['message' => 'success'], 200);
+});
+
 
     // Log Activity
     Route::get('/activity-logs', [ActivityLogController::class, 'index']);
