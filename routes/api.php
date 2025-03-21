@@ -65,7 +65,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('transaction-categories', TransactionCategoryController::class);
     Route::apiResource('transactions', TransactionController::class);
 
-    // Route::middleware('check_permission')->group(function () {
+    Route::middleware('check_permission')->group(function () {
         Route::apiResource('users', UserController::class);
         Route::apiResource('admins', AdminController::class);
         Route::apiResource('permission-roles', PermissionRoleController::class);
@@ -81,7 +81,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('learning-classes', LearningClassController::class);
         Route::apiResource('advisory-classes', AdvisoryClassController::class);
         Route::apiResource('grades', GradeController::class);
-    // });
+    });
 
     // Route tambahan
     Route::get('/schedules/{schedule}/with-class-info', [ScheduleController::class, 'showWithClassInfo']);
